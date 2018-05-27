@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2018
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PalApi", "PalApi\PalApi.csproj", "{AEF1F533-FFF7-47A0-A9EA-A60F39CA4AF4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PalApi.Example.CLI", "PalApi.Example.CLI\PalApi.Example.CLI.csproj", "{A49C538F-BD3E-4BAA-B1A7-423CEF74216C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PalApi.Utilities.Imaging", "PalApi.Utilities.Imaging\PalApi.Utilities.Imaging.csproj", "{C4EE333D-284F-44B3-847C-3E5117BECF9C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PalApi.Utilities.Storage", "PalApi.Utilities.Storage\PalApi.Utilities.Storage.csproj", "{F72F8CD0-FF51-47D0-A241-FEAD0EBAEAF6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{5CD0EC21-43ED-4434-A98E-BEE870A55A7B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PalApi.Example.ProjectPlugin", "PalApi.Example.ProjectPlugin\PalApi.Example.ProjectPlugin.csproj", "{E9EFDC63-EA3E-483B-8C88-3637F4CE5601}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AEF1F533-FFF7-47A0-A9EA-A60F39CA4AF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEF1F533-FFF7-47A0-A9EA-A60F39CA4AF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEF1F533-FFF7-47A0-A9EA-A60F39CA4AF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEF1F533-FFF7-47A0-A9EA-A60F39CA4AF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A49C538F-BD3E-4BAA-B1A7-423CEF74216C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A49C538F-BD3E-4BAA-B1A7-423CEF74216C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A49C538F-BD3E-4BAA-B1A7-423CEF74216C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A49C538F-BD3E-4BAA-B1A7-423CEF74216C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4EE333D-284F-44B3-847C-3E5117BECF9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4EE333D-284F-44B3-847C-3E5117BECF9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4EE333D-284F-44B3-847C-3E5117BECF9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4EE333D-284F-44B3-847C-3E5117BECF9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F72F8CD0-FF51-47D0-A241-FEAD0EBAEAF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F72F8CD0-FF51-47D0-A241-FEAD0EBAEAF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F72F8CD0-FF51-47D0-A241-FEAD0EBAEAF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F72F8CD0-FF51-47D0-A241-FEAD0EBAEAF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9EFDC63-EA3E-483B-8C88-3637F4CE5601}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9EFDC63-EA3E-483B-8C88-3637F4CE5601}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9EFDC63-EA3E-483B-8C88-3637F4CE5601}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9EFDC63-EA3E-483B-8C88-3637F4CE5601}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AEF1F533-FFF7-47A0-A9EA-A60F39CA4AF4} = {5CD0EC21-43ED-4434-A98E-BEE870A55A7B}
+		{C4EE333D-284F-44B3-847C-3E5117BECF9C} = {5CD0EC21-43ED-4434-A98E-BEE870A55A7B}
+		{F72F8CD0-FF51-47D0-A241-FEAD0EBAEAF6} = {5CD0EC21-43ED-4434-A98E-BEE870A55A7B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9B494624-58BF-491E-B271-A6E087C1C833}
+	EndGlobalSection
+EndGlobal
