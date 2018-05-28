@@ -248,7 +248,13 @@ namespace PalApi
             if (!await Write(packetTemplates.Auth(pwd, status)))
                 return false;
 
-            var balanceQuery = await packetWatcher.Subscribe<BalanceQueryResult>();
+            var balanceQuery = await packetWatcher.Subscribe(new BalanceQueryResult(), new LoginFailed());
+
+            if (balanceQuery.Packet is LoginFailed)
+            {
+                OnLoginFailed(((LoginFailed)balanceQuery.Packet).Reason);
+                return false;
+            }
 
             return true;
         }

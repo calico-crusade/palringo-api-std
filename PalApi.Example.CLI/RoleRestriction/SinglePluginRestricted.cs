@@ -12,7 +12,7 @@ namespace PalApi.Example.CLI.RoleRestriction
             await bot.Reply(msg, "Anyone can access this command!");
         }
 
-        [Command("restricted", Roles = "Custom, Auth")]
+        [Command("restricted", Roles = "Custom, Auth, Admin")]
         public async void CustomRoleRestricted(IPalBot bot, Message msg, string cmd)
         {
             await bot.Reply(msg, "Only people who meet the conditions of the \"CustomRole.cs\" role and people who are \"Authorized\" can use this plugin.");

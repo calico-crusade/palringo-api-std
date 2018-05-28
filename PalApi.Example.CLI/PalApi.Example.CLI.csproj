@@ -7,8 +7,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PalApi.Example.ProjectPlugin\PalApi.Example.ProjectPlugin.csproj" />
-    <ProjectReference Include="..\PalApi.Utilities.Imaging\PalApi.Imaging.csproj" />
-    <ProjectReference Include="..\PalApi.Utilities.Storage\PalApi.Storage.csproj" />
+    <ProjectReference Include="..\PalApi.Imaging\PalApi.Imaging.csproj" />
+    <ProjectReference Include="..\PalApi.Storage\PalApi.Storage.csproj" />
     <ProjectReference Include="..\PalApi\PalApi.csproj" />
   </ItemGroup>
 

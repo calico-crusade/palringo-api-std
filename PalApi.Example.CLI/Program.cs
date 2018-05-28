@@ -44,7 +44,7 @@ namespace PalApi.Cli
         /// <param name="args">Command line arguments (not used)</param>
         static void Main(string[] args)
         {
-            //Set the default database instance (Defaults to SQLite)
+            //Set the default database instance (Defaults to SQLite) This is not neccessary.
             Database.DefaultDatabase = new MySqlDatabase("server=localhost;user id=root;password=pass;database=palapi;SslMode=None;Allow User Variables=True;");
 
             //Call the start method.
