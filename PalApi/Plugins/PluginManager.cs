@@ -13,6 +13,7 @@ namespace PalApi.Plugins
     public interface IPluginManager
     {
         event ExceptionCarrier OnException;
+        event MessageCarrier OnMessage;
 
         void Process(IPalBot bot, IPacketMap pkt);
 
@@ -21,6 +22,7 @@ namespace PalApi.Plugins
     public class PluginManager : IPluginManager
     {
         public event ExceptionCarrier OnException = delegate { };
+        public event MessageCarrier OnMessage = delegate { };
 
         private List<ReflectedPlugin> plugins;
         private List<ReflectedPacket> packets;
@@ -86,7 +88,9 @@ namespace PalApi.Plugins
         {
             if (pkt is Message)
             {
-                ProcessMessage(bot, (Message)pkt);
+                var msg = (Message)pkt;
+                ProcessMessage(bot, msg);
+                OnMessage(bot, msg);
                 return;
             }
 

@@ -164,8 +164,8 @@ namespace PalApi
 
         public async Task<User> GetUser(int id)
         {
-            if (subProfiling.Users.ContainsKey(id))
-                return subProfiling.Users[id];
+            if (SubProfiling.Users.ContainsKey(id))
+                return SubProfiling.Users[id];
 
             var pack = packetTemplates.UserInfo(id);
 
@@ -185,8 +185,8 @@ namespace PalApi
                 Console.WriteLine("Issue with thing: " + ex.ToString());
             }
 
-            if (subProfiling.Users.ContainsKey(id))
-                return subProfiling.Users[id];
+            if (SubProfiling.Users.ContainsKey(id))
+                return SubProfiling.Users[id];
 
             return new User
             {
@@ -200,15 +200,15 @@ namespace PalApi
         }
         public Group GetGroup(int id)
         {
-            if (!subProfiling.Groups.ContainsKey(id))
+            if (!SubProfiling.Groups.ContainsKey(id))
                 return null;
 
-            return subProfiling.Groups[id];
+            return SubProfiling.Groups[id];
         }
         public IEnumerable<GroupUser> GetGroupMembers(int id)
         {
             var group = GetGroup(id);
-            return group == null ? null : subProfiling.GroupUsers[group];
+            return group == null ? null : SubProfiling.GroupUsers[group];
         }
         public Dictionary<Group, IEnumerable<GroupUser>> Groups => SubProfiling.GroupUsers;
         public IEnumerable<User> Users => SubProfiling.Users.Select(t => t.Value);

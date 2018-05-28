@@ -21,6 +21,7 @@ namespace PalApi
         event PacketCarrier OnPacketSent;
         event PacketCarrier OnUnhandledPacket;
         event StringCarrier OnLoginFailed;
+        event MessageCarrier OnMessage;
 
         string Email { get; }
         string Password { get; }
@@ -44,14 +45,16 @@ namespace PalApi
         public event PacketCarrier OnPacketSent = delegate { };
         public event PacketCarrier OnUnhandledPacket = delegate { };
         public event StringCarrier OnLoginFailed = delegate { };
+        public event MessageCarrier OnMessage = delegate { };
 
         public string Email { get; private set; }
         public string Password { get; private set; }
         public AuthStatus Status { get; private set; }
         public DeviceType Device { get; private set; }
         public bool SpamFilter { get; private set; }
-        public IRoleManager RoleManager => roleManager;
-        public ISubProfiling SubProfiling => subProfiling;
+        public IRoleManager RoleManager { get; }
+        public ISubProfiling SubProfiling { get; }
+
         public ExtendedUser Profile => SubProfiling.Profile;
 
         private IPacketSerializer packetSerializer;
@@ -62,10 +65,7 @@ namespace PalApi
         private IZLibCompression compression;
         private IAuthenticationUtility authentication;
         private IPacketHandlerHub handlerHub;
-        private ISubProfiling subProfiling;
         private IPluginManager pluginManager;
-        private IRoleManager roleManager;
-
         private NetworkClient _client;
 
         public PalBot(IPacketSerializer packetSerializer,
@@ -88,9 +88,9 @@ namespace PalApi
             this.compression = compression;
             this.authentication = authentication;
             this.handlerHub = handlerHub;
-            this.subProfiling = subProfiling;
+            this.SubProfiling = subProfiling;
             this.pluginManager = pluginManager;
-            this.roleManager = roleManager;
+            this.RoleManager = roleManager;
 
             _client = new NetworkClient(DefaultHost, DefaultPort);
             _client.OnDisconnected += (c) => OnDisconnected();
@@ -98,10 +98,11 @@ namespace PalApi
             _client.OnDataReceived += (c, b) => this.packetDeserializer.ReadPacket(c, b);
 
             this.pluginManager.OnException += (e, n) => OnException(e, n);
+            this.pluginManager.OnMessage += (b, m) => OnMessage(b, m);
             this.packetSerializer.OnException += (e, n) => OnException(e, n);
             this.handlerHub.OnException += (e, n) => OnException(e, n);
             this.packetWatcher.OnException += (e, n) => OnException(e, n);
-            this.subProfiling.OnException += (e, n) => OnException(e, n);
+            this.SubProfiling.OnException += (e, n) => OnException(e, n);
             this.packetDeserializer.OnException += (e, n) => OnException(e, n);
 
             this.packetDeserializer.OnPacketParsed += (c, p) => PacketReceived(p);
