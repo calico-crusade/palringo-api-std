@@ -2,7 +2,7 @@
 A complete rewrite of the original [PalringoAPI](https://github.com/calico-crusade/PalringoApi) in .net standard 2.0
 
 # Where can I use it?
-I have tested it on Windows (.net Framework 4.5.1+ & Core 2.0) and on Mac (Core 2.0)
+I have tested it on Windows (.net Framework 4.5.1+ & Core 2.0) and on Mac (Core 2.0). Anyone want to test on linux for me? ;)
 
 # How do I use it?
 It is pretty simple to use. You can install it via Nuget (see below). There are 3 different packages available.
