@@ -43,6 +43,7 @@ namespace PalApi
         Task<Response> LeaveGroup(int group);
         Task<Response> UpdateProfile(string nickname, string status);
         Task<Response> UpdateProfile(ExtendedUser user);
+        Task Disconnect();
 
         Dictionary<Group, IEnumerable<GroupUser>> Groups { get; }
         IEnumerable<User> Users { get; }
@@ -292,6 +293,17 @@ namespace PalApi
         public async Task<Response> UpdateProfile(ExtendedUser user)
         {
             return await SendAwaitResponse(packetTemplates.UpdateProfile(user));
+        }
+
+        public async Task Disconnect()
+        {
+            await Write(new Packet
+            {
+                Command = "BYE",
+                Headers = new Dictionary<string, string>(),
+                Payload = new byte[0]
+            });
+            _client.Stop();
         }
     }
 }

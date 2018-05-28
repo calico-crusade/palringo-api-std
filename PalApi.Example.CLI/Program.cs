@@ -7,7 +7,7 @@ using PalApi.Utilities.Storage.DatabaseTypes;
 namespace PalApi.Cli
 {
     /// <summary>
-    /// Example of how to the Palringo API
+    /// Example of how to use the Palringo API
     /// </summary>
     public class Program
     {
