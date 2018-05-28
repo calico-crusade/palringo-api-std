@@ -15,8 +15,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{5CD0EC21-43E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PalApi.Example.ProjectPlugin", "PalApi.Example.ProjectPlugin\PalApi.Example.ProjectPlugin.csproj", "{E9EFDC63-EA3E-483B-8C88-3637F4CE5601}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PalApi.Example.CLI.Framework", "PalApi.Example.CLI.Framework\PalApi.Example.CLI.Framework.csproj", "{9C090B5D-58FC-45E6-840D-50EA96F5C61C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,10 +41,6 @@ Global
 		{E9EFDC63-EA3E-483B-8C88-3637F4CE5601}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9EFDC63-EA3E-483B-8C88-3637F4CE5601}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E9EFDC63-EA3E-483B-8C88-3637F4CE5601}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9C090B5D-58FC-45E6-840D-50EA96F5C61C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9C090B5D-58FC-45E6-840D-50EA96F5C61C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9C090B5D-58FC-45E6-840D-50EA96F5C61C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9C090B5D-58FC-45E6-840D-50EA96F5C61C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
