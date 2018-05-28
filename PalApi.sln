@@ -7,13 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PalApi", "PalApi\PalApi.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PalApi.Example.CLI", "PalApi.Example.CLI\PalApi.Example.CLI.csproj", "{A49C538F-BD3E-4BAA-B1A7-423CEF74216C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PalApi.Utilities.Imaging", "PalApi.Utilities.Imaging\PalApi.Utilities.Imaging.csproj", "{C4EE333D-284F-44B3-847C-3E5117BECF9C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PalApi.Imaging", "PalApi.Imaging\PalApi.Imaging.csproj", "{C4EE333D-284F-44B3-847C-3E5117BECF9C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PalApi.Utilities.Storage", "PalApi.Utilities.Storage\PalApi.Utilities.Storage.csproj", "{F72F8CD0-FF51-47D0-A241-FEAD0EBAEAF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PalApi.Storage", "PalApi.Storage\PalApi.Storage.csproj", "{F72F8CD0-FF51-47D0-A241-FEAD0EBAEAF6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{5CD0EC21-43ED-4434-A98E-BEE870A55A7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PalApi.Example.ProjectPlugin", "PalApi.Example.ProjectPlugin\PalApi.Example.ProjectPlugin.csproj", "{E9EFDC63-EA3E-483B-8C88-3637F4CE5601}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PalApi.Example.ProjectPlugin", "PalApi.Example.ProjectPlugin\PalApi.Example.ProjectPlugin.csproj", "{E9EFDC63-EA3E-483B-8C88-3637F4CE5601}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
