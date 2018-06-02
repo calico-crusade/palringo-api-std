@@ -5,17 +5,12 @@ A complete rewrite of the original [PalringoAPI](https://github.com/calico-crusa
 I have tested it on Windows (.net Framework 4.5.1+ & Core 2.0) and on Mac (Core 2.0). Anyone want to test on linux for me? ;)
 
 # How do I use it?
-It is pretty simple to use. You can install it via Nuget (see below). There are 3 different packages available.
+It is pretty simple to use. You can install it via Nuget (see below). There are 2 different packages available.
 
 ```
 PM> Install-Package PalApi
 ```
 The primary package that contains all of the useful stuff. Networking, Plugins, all of it. It does not contain anything related to imaging (See below).
-
-```
-PM> Install-Package PalApi.Imaging
-```
-This package handles all of the imaging (Bitmap) sort of things. This is due to GDI+ not being available in .net core out side of a pre-release package (System.Drawing.Common)
 
 ```
 PM> Install-Package PalApi.Storage
