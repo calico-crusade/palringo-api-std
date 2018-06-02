@@ -1,6 +1,8 @@
 ﻿using PalApi.Plugins;
 using PalApi.Types;
 
+using System.Linq;
+
 namespace PalApi.Example.CLI
 {
     /// <summary>
@@ -79,6 +81,12 @@ namespace PalApi.Example.CLI
             }
 
             await bot.Reply(msg, $"So you're 17... huh... boring age... Haha");
+        }
+
+        [Command("groups")]
+        public async void Groups(IPalBot bot, Message msg, string cmd)
+        {
+            await bot.Reply(msg, $"Groups: {(string.Join("\r\n", bot.Groups.Select(t => t.Key.Name).ToArray()))}");
         }
     }
 }

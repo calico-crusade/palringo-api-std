@@ -29,7 +29,7 @@ namespace PalApi.Cli
                             //Email Address
                             "example@test.com", 
                             //Password
-                            "Password", 
+                            "Sup3r $3CR3T P4$$W0R|>", 
                             //Authorization Status (Away, Invisible, Online, ect)
                             AuthStatus.Away, 
                             //What device to mask the bot as (Suggest PC / Web / Generic)

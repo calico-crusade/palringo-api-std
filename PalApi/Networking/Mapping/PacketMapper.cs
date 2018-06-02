@@ -56,7 +56,7 @@ namespace PalApi.Networking.Mapping
         {
             if (PacketMaps == null)
                 LoadPacketMaps();
-
+            
             if (!PacketMaps.ContainsKey(packet.Command))
                 return null;
 

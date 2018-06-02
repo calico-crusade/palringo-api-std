@@ -29,14 +29,23 @@ namespace PalApi.Networking
 
         public void ReadPacket(INetworkClient client, byte[] prestine)
         {
-            var data = new byte[prestine.Length];
-            Array.Copy(prestine, data, data.Length);
             try
             {
-                if (overflow != null && overflow.Length > 0)
+                byte[] data;
+
+                if (overflow == null || overflow.Length <= 0)
                 {
-                    data = overflow.Union(data).ToArray();
+                    data = new byte[prestine.Length];
+                    Array.Copy(prestine, data, data.Length);
                 }
+                else
+                {
+                    data = new byte[prestine.Length + overflow.Length];
+                    Array.Copy(overflow, data, overflow.Length);
+                    Array.Copy(prestine, 0, data, overflow.Length, prestine.Length);
+                }
+
+                string packetString = Outbound.GetString(data);
 
                 var cmd = data.FirstInstanceOf(NewLine).ToArray();
                 data = data.Skip(cmd.Length + NewLine.Length).ToArray();
@@ -89,6 +98,13 @@ namespace PalApi.Networking
 
                 if (pack.ContentLength > data.Length)
                 {
+                    if (overflow != null && overflow.Length > 0)
+                    {
+                        data = new byte[prestine.Length + overflow.Length];
+                        Array.Copy(overflow, data, overflow.Length);
+                        Array.Copy(prestine, 0, data, overflow.Length, prestine.Length);
+                        prestine = data;
+                    }
                     overflow = prestine;
                     return;
                 }
