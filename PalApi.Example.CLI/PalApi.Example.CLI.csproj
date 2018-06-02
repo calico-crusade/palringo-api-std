@@ -6,8 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\PalApi.Example.ProjectPlugin\PalApi.Example.ProjectPlugin.csproj" />
-    <ProjectReference Include="..\PalApi.Imaging\PalApi.Imaging.csproj" />
     <ProjectReference Include="..\PalApi.Storage\PalApi.Storage.csproj" />
     <ProjectReference Include="..\PalApi\PalApi.csproj" />
   </ItemGroup>

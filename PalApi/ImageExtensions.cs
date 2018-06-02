@@ -10,8 +10,9 @@ namespace PalApi
 {
     using SubProfile;
 
-    public static class Extensions
+    public static class ImageExentions
     {
+        #region Imaging Extensions
         public const string UserAvatarUrl = "https://clientavatars.palapi.net/FileServerSpring/subscriber/avatar/{0}?size=500#0";
         public const string GroupAvatarUrl = "https://clientavatars.palapi.net/FileServerSpring/group/avatar/{0}?size=500";
 
@@ -147,7 +148,9 @@ namespace PalApi
                 graphics.FillPath(brush, path);
             }
         }
+        #endregion
 
+        #region Bot Extenders
         public static async Task<Bitmap> GetImage(this IPalBot bot, string url)
         {
             using (var client = new WebClient())
@@ -179,5 +182,6 @@ namespace PalApi
         {
             return await bot.Reply(msg, image.ToByteArray());
         }
+        #endregion
     }
 }
