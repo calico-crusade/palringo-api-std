@@ -18,5 +18,10 @@
 
         [Header("ACTION")]
         public AdminActions Action { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Action.ToString()} - {SourceId} => {TargetId} ({GroupId})";
+        }
     }
 }

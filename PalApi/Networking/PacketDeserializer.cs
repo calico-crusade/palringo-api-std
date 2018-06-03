@@ -29,6 +29,11 @@ namespace PalApi.Networking
 
         public void ReadPacket(INetworkClient client, byte[] prestine)
         {
+            DoRead(client, prestine);
+        }
+
+        private void DoRead(INetworkClient client, byte[] prestine, bool firstTime = true)
+        {
             try
             {
                 byte[] data;
@@ -62,7 +67,7 @@ namespace PalApi.Networking
                     overflow = null;
                     return;
                 }
-                
+
                 while (true)
                 {
                     var part = data.FirstInstanceOf(NewLine).ToArray();
@@ -74,7 +79,7 @@ namespace PalApi.Networking
                     var key = part.FirstInstanceOf(HeaderCharacter).ToArray();
 
                     var val = part.Skip(key.Length + 1).ToArray();
-                    
+
                     pack[Outbound.GetString(key).ToUpper()] = Outbound.GetString(val).Trim();
                 }
 
@@ -84,7 +89,7 @@ namespace PalApi.Networking
                 if (pack.ContentLength == 0)
                 {
                     OnPacketParsed(client, pack);
-                    overflow = data.Length > 0 ? data : null;
+                    overflow = null;
                     return;
                 }
 
@@ -105,12 +110,12 @@ namespace PalApi.Networking
                         Array.Copy(prestine, 0, data, overflow.Length, prestine.Length);
                         prestine = data;
                     }
-                    overflow = prestine;
+                    overflow = pack.Command == "RESPONSE" ? null : prestine;
                     return;
                 }
 
                 pack.Payload = data.Take(pack.ContentLength).ToArray();
-                overflow = data.Skip(pack.ContentLength).ToArray();
+                overflow = pack.Command == "RESPONSE" ? null : data.Skip(pack.ContentLength).ToArray();
                 OnPacketParsed(client, pack);
             }
             catch (Exception ex)

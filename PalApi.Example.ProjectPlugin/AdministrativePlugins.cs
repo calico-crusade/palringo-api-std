@@ -1,11 +1,16 @@
 ﻿using PalApi.Plugins;
 using PalApi.Types;
+using System;
+using System.Net;
 
 namespace PalApi.Example.ProjectPlugin
 {
     [Command("$")]
     public class AdministrativePlugins : IPlugin
     {
+
+        public const string QuoteUrl = "http://inspirobot.me/api?generate=true";
+
         [Command("perma silence", Roles = "Mod", MessageType = MessageType.Group)]
         public async void PermaSilence(IPalBot bot, Message msg, string cmd)
         {
@@ -41,6 +46,24 @@ namespace PalApi.Example.ProjectPlugin
 
                 if (userMessage.UserId == userid)
                     await bot.AdminAction(AdminActions.Silence, userid, msg.GroupId.Value);
+            }
+        }
+
+        [Command("inspire")]
+        public async void Inspire(IPalBot bot, Message msg, string cmd)
+        {
+            try
+            {
+                using (var cli = new WebClient())
+                {
+                    var url = cli.DownloadString(QuoteUrl);
+                    var image = await bot.GetImage(url);
+                    await bot.Reply(msg, image);
+                }
+            }
+            catch (Exception ex)
+            {
+                await bot.Reply(msg, "Something went wrong: " + ex.ToString());
             }
         }
     }

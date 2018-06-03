@@ -27,23 +27,21 @@ namespace PalApi
         public static byte[] ToByteArray(this Bitmap bitmap)
         {
             using (var ms = new MemoryStream())
+            using (var b = new Bitmap(bitmap))
             {
-                bitmap.Save(ms, ImageFormat.Jpeg);
+                b.Save(ms, ImageFormat.Jpeg);
                 return ms.ToArray();
             }
         }
 
-        public static Bitmap CropToCircle(this Bitmap srcImage, Color backGround)
+        public static Bitmap CropToCircle(this Bitmap srcImage, Color backGround, PixelFormat format = PixelFormat.Format32bppArgb)
         {
-            var dstImage = new Bitmap(srcImage.Width, srcImage.Height, srcImage.PixelFormat);
+            var dstImage = new Bitmap(srcImage.Width, srcImage.Height, format);
             using (var g = Graphics.FromImage(dstImage))
             {
+                g.Clear(backGround);
                 g.SmoothingMode = SmoothingMode.HighQuality;
                 g.CompositingQuality = CompositingQuality.HighQuality;
-                using (Brush br = new SolidBrush(backGround))
-                {
-                    g.FillRectangle(br, 0, 0, dstImage.Width, dstImage.Height);
-                }
                 GraphicsPath path = new GraphicsPath();
                 path.AddEllipse(0, 0, dstImage.Width, dstImage.Height);
                 g.SetClip(path);

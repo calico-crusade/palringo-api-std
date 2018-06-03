@@ -7,6 +7,7 @@
     using SubProfile.Parsing;
     using Plugins;
     using Types;
+    using System;
 
     public class BasicHandlers : IPacketHandler
     {
@@ -84,6 +85,11 @@
             }
 
             
+        }
+
+        public void AdminActionHandler(AdminAction action, IPalBot bot)
+        {
+            Console.WriteLine("Action happened: " + action);
         }
     }
 }
