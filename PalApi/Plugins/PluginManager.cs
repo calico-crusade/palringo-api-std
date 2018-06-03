@@ -16,7 +16,6 @@ namespace PalApi.Plugins
         event MessageCarrier OnMessage;
 
         void Process(IPalBot bot, IPacketMap pkt);
-
     }
 
     public class PluginManager : IPluginManager
@@ -116,11 +115,13 @@ namespace PalApi.Plugins
         {
             plugins = new List<ReflectedPlugin>();
 
-            var plugs = reflection
-                .GetTypes(typeof(IPlugin))
-                .Select(t => (IPlugin)reflection.GetInstance(t))
-                .ToArray();
-            
+            //var plugs = reflection
+            //    .GetTypes(typeof(IPlugin))
+            //    .Select(t => (IPlugin)reflection.GetInstance(t))
+            //    .ToArray();
+
+            var plugs = reflection.GetAllTypesOf<IPlugin>().ToArray();
+
             foreach(var plug in plugs)
             {
                 var ic = plug.GetType().GetCustomAttributes<Command>().ToArray();
