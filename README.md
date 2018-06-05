@@ -1,4 +1,7 @@
 [![NuGet](https://img.shields.io/nuget/dt/PalApi.svg?style=for-the-badge)](https://www.nuget.org/packages/PalApi/)
+[![NuGet](https://img.shields.io/nuget/v/PalApi.svg?style=for-the-badge)](https://www.nuget.org/packages/PalApi/)
+[![license](https://img.shields.io/github/license/calico-crusade/palringo-api-std.svg?style=for-the-badge)](https://github.com/calico-crusade/palringo-api-std/blob/master/LICENSE)
+[![GitHub last commit](https://img.shields.io/github/last-commit/calico-crusade/palringo-api-std.svg?style=for-the-badge)](https://github.com/calico-crusade/palringo-api-std/commits/master)
 
 # PalringoAPI for .net standard 2.0
 A complete rewrite of the original [PalringoAPI](https://github.com/calico-crusade/PalringoApi) in .net standard 2.0
