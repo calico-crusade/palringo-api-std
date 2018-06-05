@@ -1,3 +1,5 @@
+[![NuGet](https://img.shields.io/nuget/dt/PalApi.svg?style=for-the-badge)](https://www.nuget.org/packages/PalApi/)
+
 # PalringoAPI for .net standard 2.0
 A complete rewrite of the original [PalringoAPI](https://github.com/calico-crusade/PalringoApi) in .net standard 2.0
 
