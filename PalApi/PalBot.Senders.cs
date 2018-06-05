@@ -31,10 +31,7 @@ namespace PalApi
         Task<Response> Private(int id, string message);
         Task<bool> Reply(Message msg, byte[] image);
         Task<Response> Reply(Message msg, string message);
-        Task<bool> Login(string email, string password,
-            AuthStatus status = AuthStatus.Online,
-            DeviceType device = DeviceType.PC,
-            bool spamFilter = false);
+        Task<bool> Login(string email, string password, AuthStatus status = AuthStatus.Online, DeviceType device = DeviceType.PC, bool spamFilter = false);
         Task<Response> AdminAction(AdminActions action, int user, int group);
         Task<Response> AddContact(int user, string message = "I'd like to add you");
         Task<Response> AddContactResponse(bool accept, int user);
@@ -227,16 +224,24 @@ namespace PalApi
             var connected = await _client.Start();
 
             if (!connected)
+            {
+                _couldntConnect?.Invoke();
                 return false;
+            }
 
             if (!await Write(packetTemplates.Login(email, device, spamFilter)))
+            {
+                _couldntConnect?.Invoke();
                 return false;
+            }
 
             var resp = await packetWatcher.Subscribe(new LoginFailed(), new AuthRequest());
 
             if (resp.Packet is LoginFailed)
             {
-                OnLoginFailed(((LoginFailed)resp.Packet).Reason);
+                var reason = ((LoginFailed)resp.Packet).Reason;
+                _loginFailed?.Invoke(reason);
+                OnLoginFailed(reason);
                 return false;
             }
 
@@ -246,13 +251,18 @@ namespace PalApi
             pwd = authentication.GenerateAuth(auth.Key, pwd);
 
             if (!await Write(packetTemplates.Auth(pwd, status)))
+            {
+                _couldntConnect?.Invoke();
                 return false;
+            }
 
             var balanceQuery = await packetWatcher.Subscribe(new LoginFailed(), new BalanceQueryResult());
 
             if (balanceQuery.Packet is LoginFailed)
             {
-                OnLoginFailed(((LoginFailed)balanceQuery.Packet).Reason);
+                var reason = ((LoginFailed)balanceQuery.Packet).Reason;
+                _loginFailed?.Invoke(reason);
+                OnLoginFailed(reason);
                 return false;
             }
 

@@ -12,6 +12,7 @@ namespace PalApi
     using Types;
     using Utilities;
     using Plugins;
+    using System;
 
     public interface IPalBot : IPalBotSenders
     {
@@ -32,6 +33,12 @@ namespace PalApi
 
         Task<bool> Write(IPacket packet);
         Task<bool> Write(IPacketMap packet);
+
+        IPalBot Disconnected(Action action);
+        IPalBot LoginFailed(Action<string> action);
+        IPalBot Error(Action<Exception, string> action);
+        IPalBot MessageReceived(Action<IPalBot, Message> action);
+        IPalBot CouldNotConnect(Action action);
     }
 
     public partial class PalBot : IPalBot
@@ -68,6 +75,12 @@ namespace PalApi
         private IPluginManager pluginManager;
         private NetworkClient _client;
 
+        private Action<string> _loginFailed;
+        private Action _disconnected;
+        private Action _couldntConnect;
+        private Action<Exception, string> _error;
+        private Action<IPalBot, Message> _message;
+
         public PalBot(IPacketSerializer packetSerializer,
             IPacketDeserializer packetDeserializer,
             IPacketMapper packetMapper,
@@ -93,17 +106,26 @@ namespace PalApi
             this.RoleManager = roleManager;
 
             _client = new NetworkClient(DefaultHost, DefaultPort);
+            _client.OnDisconnected += (c) => _disconnected?.Invoke();
             _client.OnDisconnected += (c) => OnDisconnected();
+            _client.OnException += (e, n) => _error?.Invoke(e, n);
             _client.OnException += (e, n) => OnException(e, n);
             _client.OnDataReceived += (c, b) => this.packetDeserializer.ReadPacket(c, b);
 
             this.pluginManager.OnException += (e, n) => OnException(e, n);
+            this.pluginManager.OnException += (e, n) => _error?.Invoke(e, n);
             this.pluginManager.OnMessage += (b, m) => OnMessage(b, m);
+            this.pluginManager.OnMessage += (b, m) => _message?.Invoke(b, m);
             this.packetSerializer.OnException += (e, n) => OnException(e, n);
+            this.packetSerializer.OnException += (e, n) => _error?.Invoke(e, n);
             this.handlerHub.OnException += (e, n) => OnException(e, n);
+            this.handlerHub.OnException += (e, n) => _error?.Invoke(e, n);
             this.packetWatcher.OnException += (e, n) => OnException(e, n);
+            this.packetWatcher.OnException += (e, n) => _error?.Invoke(e, n);
             this.SubProfiling.OnException += (e, n) => OnException(e, n);
+            this.SubProfiling.OnException += (e, n) => _error?.Invoke(e, n);
             this.packetDeserializer.OnException += (e, n) => OnException(e, n);
+            this.packetDeserializer.OnException += (e, n) => _error?.Invoke(e, n);
 
             this.packetDeserializer.OnPacketParsed += (c, p) => PacketReceived(p);
         }
@@ -165,6 +187,36 @@ namespace PalApi
             pluginManager.Process(this, map);
         }
         
+        public IPalBot Disconnected(Action action)
+        {
+            this._disconnected = action;
+            return this;
+        }
+
+        public IPalBot LoginFailed(Action<string> action)
+        {
+            this._loginFailed = action;
+            return this;
+        }
+
+        public IPalBot Error(Action<Exception, string> action)
+        {
+            this._error = action;
+            return this;
+        }
+
+        public IPalBot MessageReceived(Action<IPalBot, Message> action)
+        {
+            this._message = action;
+            return this;
+        }
+
+        public IPalBot CouldNotConnect(Action action)
+        {
+            _couldntConnect = action;
+            return this;
+        }
+
         public static MapHandler<IPalBot> Mapper()
         {
             return new MapHandler<IPalBot>()

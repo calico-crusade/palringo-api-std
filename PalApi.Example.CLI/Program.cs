@@ -24,6 +24,14 @@ namespace PalApi.Cli
                         .RegisterProjectPlugin()
                         //Add the owner's pal ID to the Authorized users list.
                         .AddAuth(1234)
+                        //Print out Login Failed reason
+                        .LoginFailed(reason => Console.WriteLine("Login Failed: " + reason))
+                        //Print out that the bot got disconnected
+                        .Disconnected(() => Console.WriteLine("Bot was disconnected"))
+                        //Print out that there was a handled error within the bot
+                        .Error((error, note) => Console.WriteLine("An error occurred: " + note + "\r\nStack Trace: " + error.ToString()))
+                        //Print out that the bot coulnd't connect
+                        .CouldNotConnect(() => Console.WriteLine("Bot could not connect to Palringo"))
                         //Start the login sequence. Only Email and Password are required. Rest will default
                         .Login(
                             //Email Address
