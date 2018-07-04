@@ -31,7 +31,7 @@ namespace PalApi
         Task<Response> Private(int id, string message);
         Task<bool> Reply(Message msg, byte[] image);
         Task<Response> Reply(Message msg, string message);
-        Task<bool> Login(string email, string password, AuthStatus status = AuthStatus.Online, DeviceType device = DeviceType.PC, bool spamFilter = false);
+        Task<bool> Login(string email, string password, AuthStatus status = AuthStatus.Online, DeviceType device = DeviceType.PC, bool spamFilter = false, bool enablePlugins = true);
         Task<Response> AdminAction(AdminActions action, int user, int group);
         Task<Response> AddContact(int user, string message = "I'd like to add you");
         Task<Response> AddContactResponse(bool accept, int user);
@@ -213,13 +213,15 @@ namespace PalApi
         public async Task<bool> Login(string email, string password,
             AuthStatus status = AuthStatus.Online,
             DeviceType device = DeviceType.PC,
-            bool spamFilter = false)
+            bool spamFilter = false,
+            bool enablePlugins = true)
         {
             this.Email = email;
             this.Password = password;
             this.Status = status;
             this.Device = device;
             this.SpamFilter = spamFilter;
+            this.EnablePlugins = enablePlugins;
 
             var connected = await _client.Start();
 
@@ -320,6 +322,12 @@ namespace PalApi
                 Payload = new byte[0]
             });
             _client.Stop();
+        }
+
+        public async Task<bool> UpdateAvatar(byte[] image)
+        {
+            var packet = packetTemplates.AvatarUpdate(image);
+            return await Write(packet);
         }
     }
 }

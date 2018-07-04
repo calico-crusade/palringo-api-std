@@ -174,7 +174,6 @@ namespace PalApi.SubProfile.Parsing
                     }
                     else
                     {
-                        //	if (str.Length <= 0 || str.CompareTo(lower) != 0)
                         if (str.Length <= 0 || string.CompareOrdinal(str, lower) != 0)
                         {
                             var numArray = new byte[num3];

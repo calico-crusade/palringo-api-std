@@ -180,6 +180,16 @@ namespace PalApi
         {
             return await bot.Reply(msg, image.ToByteArray());
         }
+
+        public static async Task<bool> Avatar(this IPalBot bot, Bitmap image)
+        {
+            return await ((PalBot)bot).UpdateAvatar(image.ToByteArray());
+        }
+
+        public static async Task<bool> Avatar(this IPalBot bot, byte[] image)
+        {
+            return await ((PalBot)bot).UpdateAvatar(image);
+        }
         #endregion
     }
 }

@@ -14,6 +14,7 @@ namespace PalApi.Networking
         IPacket UserInfo(int id);
         IPacket Message(MessageType target, DataType type, int id, byte[] data);
         IPacket Message(MessageType target, DataType type, int id, string data);
+        IPacket AvatarUpdate(byte[] data);
         IPacket AdminAction(AdminActions action, int user, int group);
         IPacket AddContact(int user, string message = "I'd like to add you!");
         IPacket AddContactResponse(bool accept, int user);
@@ -93,6 +94,15 @@ namespace PalApi.Networking
                     ["MESG-TARGET"] = ((int)target).ToString(),
                     ["CONTENT-TYPE"] = type.FromDataType()
                 },
+                Payload = data
+            };
+        }
+
+        public IPacket AvatarUpdate(byte[] data)
+        {
+            return new Packet
+            {
+                Command = "ICON",
                 Payload = data
             };
         }

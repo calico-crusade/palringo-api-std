@@ -85,7 +85,7 @@ namespace PalApi.Plugins
 
         public void Process(IPalBot bot, IPacketMap pkt)
         {
-            if (pkt is Message)
+            if (pkt is Message && bot.EnablePlugins)
             {
                 var msg = (Message)pkt;
                 ProcessMessage(bot, msg);

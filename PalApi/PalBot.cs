@@ -30,6 +30,7 @@ namespace PalApi
         DeviceType Device { get; }
         bool SpamFilter { get; }
         ExtendedUser Profile { get; }
+        bool EnablePlugins { get; }
 
         Task<bool> Write(IPacket packet);
         Task<bool> Write(IPacketMap packet);
@@ -59,6 +60,7 @@ namespace PalApi
         public AuthStatus Status { get; private set; }
         public DeviceType Device { get; private set; }
         public bool SpamFilter { get; private set; }
+        public bool EnablePlugins { get; private set; }
         public IRoleManager RoleManager { get; }
         public ISubProfiling SubProfiling { get; }
 
