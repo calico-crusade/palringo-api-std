@@ -1,3 +1,8 @@
+[![NuGet](https://img.shields.io/nuget/dt/PalApi.svg?style=for-the-badge)](https://www.nuget.org/packages/PalApi/)
+[![NuGet](https://img.shields.io/nuget/v/PalApi.svg?style=for-the-badge)](https://www.nuget.org/packages/PalApi/)
+[![license](https://img.shields.io/github/license/calico-crusade/palringo-api-std.svg?style=for-the-badge)](https://github.com/calico-crusade/palringo-api-std/blob/master/LICENSE)
+[![GitHub last commit](https://img.shields.io/github/last-commit/calico-crusade/palringo-api-std.svg?style=for-the-badge)](https://github.com/calico-crusade/palringo-api-std/commits/master)
+
 # PalringoAPI for .net standard 2.0
 A complete rewrite of the original [PalringoAPI](https://github.com/calico-crusade/PalringoApi) in .net standard 2.0
 
@@ -10,7 +15,7 @@ It is pretty simple to use. You can install it via Nuget (see below). There are 
 ```
 PM> Install-Package PalApi
 ```
-The primary package that contains all of the useful stuff. Networking, Plugins, all of it. It does not contain anything related to imaging (See below).
+The primary package that contains all of the useful stuff. Networking, Plugins, all of it. 
 
 ```
 PM> Install-Package PalApi.Storage
@@ -22,9 +27,6 @@ You can check the Examples libraries in the source. It should be pretty simple. 
 
 # Legal & Stuff
 * By using this software you agree to the [Palringo Terms of Service](https://palringo.com/en/us/terms-and-conditions)
-* Allow the logos and name usage adhere to the [Brand Guidelines](https://www.palringo.com/en/gb/brand-guidelines) set forth by Palringo
-* If there are any questions regarding the use of the library, please contact me (method listed above)
-* Use at your own risk, Palringo can bar or suspend your account for incorrect usage of the library
-* Join the [Bot Approval](https://chat.palringo.com/bot+approval) group on Palringo for any questions regarding the use.
-* Get your bots approved, kids.
-* I am not liable or responsible for any outcome from using this library.
+* All of the logos and name usage adhere to the [Brand Guidelines](https://www.palringo.com/en/gb/brand-guidelines) set forth by Palringo
+* Join the [Bot Approval](https://chat.palringo.com/bot+approval) group on Palringo for any questions regarding the use and to get your bot approved!
+* Software is provided as is, I am not liable or responsible for any outcome from using this library.
