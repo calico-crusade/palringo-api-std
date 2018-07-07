@@ -38,6 +38,17 @@ namespace PalApi
                 Plugins.Defaults.AuthRole.AuthorizedUsers.Remove(id);
             return bot;
         }
+        public static IPalBot AddDouche(this IPalBot bot, params int[] ids)
+        {
+            Plugins.Defaults.DoucheRole.Douches.AddRange(ids);
+            return bot;
+        }
+        public static IPalBot RemoveDouche(this IPalBot bot, params int[] ids)
+        {
+            foreach (var id in ids)
+                Plugins.Defaults.DoucheRole.Douches.Remove(id);
+            return bot;
+        }
         public static IPalBot AutoReconnect(this IPalBot bot)
         {
             bot.OnDisconnected += () => bot.Login(bot.Email, bot.Password, bot.Status, bot.Device, bot.SpamFilter);
