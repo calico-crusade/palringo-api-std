@@ -88,5 +88,16 @@ namespace PalApi.Example.CLI
         {
             await bot.Reply(msg, $"Groups: {(string.Join("\r\n", bot.Groups.Select(t => t.Key.Name).ToArray()))}");
         }
+
+        /// <summary>
+        /// Shows basic implementation of the Default plugin system
+        /// </summary>
+        /// <param name="bot">The bot that is making the request</param>
+        /// <param name="msg">The message that triggered the request</param>
+        [Default]
+        public async void OnDefault(IPalBot bot, Message msg)
+        {
+            await bot.Reply(msg, "This was sent because you just used \"!ex\" with no parameters");
+        }
     }
 }

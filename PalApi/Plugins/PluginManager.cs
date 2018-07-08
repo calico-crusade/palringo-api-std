@@ -25,6 +25,7 @@ namespace PalApi.Plugins
 
         private List<ReflectedPlugin> plugins;
         private List<ReflectedPacket> packets;
+        private List<ReflectedDefault> defaults;
 
         private IReflectionUtility reflection;
         private IRoleManager roleManager;
@@ -40,7 +41,7 @@ namespace PalApi.Plugins
             if (message.ContentType != DataType.Text)
                 return;
 
-            if (plugins == null)
+            if (plugins == null || defaults == null)
                 LoadPlugins();
             
             foreach(var plugin in plugins)
@@ -59,6 +60,34 @@ namespace PalApi.Plugins
                         continue;
 
                     msg = msg.Remove(0, plugin.InstanceCommand.Cmd.Length).Trim();
+
+                    if (string.IsNullOrEmpty(msg))
+                    {
+                        var defs = defaults.Where(t => t.Instance == plugin.Instance).ToArray();
+
+                        if (defs.Length <= 0)
+                            continue;
+
+                        foreach(var d in defs)
+                        {
+                            if (!d.InstanceCommand.MessageType.HasFlag(message.MesgType))
+                                continue;
+
+                            if (!string.IsNullOrEmpty(d.InstanceCommand.Roles) &&
+                                !await roleManager.IsInRole(d.InstanceCommand.Roles, bot, message))
+                                continue;
+
+                            try
+                            {
+                                d.Method.Invoke(d.Instance, new object[] { bot, message });
+                                return;
+                            }
+                            catch (Exception ex)
+                            {
+                                OnException(ex, $"Error running default plugin {plugin.InstanceCommand?.Cmd} {d.Method.Name} with \"{message.Content}\" from {message.UserId}");
+                            }
+                        }
+                    }
                 }
 
                 if (!plugin.MethodCommand.MessageType.HasFlag(message.MesgType))
@@ -114,48 +143,77 @@ namespace PalApi.Plugins
         private void LoadPlugins()
         {
             plugins = new List<ReflectedPlugin>();
-
-            //var plugs = reflection
-            //    .GetTypes(typeof(IPlugin))
-            //    .Select(t => (IPlugin)reflection.GetInstance(t))
-            //    .ToArray();
+            defaults = new List<ReflectedDefault>();
 
             var plugs = reflection.GetAllTypesOf<IPlugin>().ToArray();
 
             foreach(var plug in plugs)
             {
-                var ic = plug.GetType().GetCustomAttributes<Command>().ToArray();
+                HandlePluginLoad(plug);
+                HandleDefaultLoad(plug);
+            }
+        }
 
-                var ms = plug.GetType()
-                            .GetMethods()
-                            .Where(t => Attribute.IsDefined(t, typeof(Command)))
-                            .ToDictionary(t => t, t => t.GetCustomAttributes<Command>());
+        private void HandlePluginLoad(IPlugin plug)
+        {
+            var ic = plug.GetType().GetCustomAttributes<Command>().ToArray();
 
-                if (ms.Count <= 0)
-                    continue;
+            var ms = plug.GetType()
+                         .GetMethods()
+                         .Where(t => Attribute.IsDefined(t, typeof(Command)))
+                         .ToDictionary(t => t, t => t.GetCustomAttributes<Command>());
 
-                if (ic.Length <= 0)
+            if (ms.Count <= 0)
+                return;
+
+            if (ic.Length <= 0)
+            {
+                plugins.AddRange(ms.SelectMany(t => t.Value.Select(a => new ReflectedPlugin
                 {
-                    plugins.AddRange(ms.SelectMany(t => t.Value.Select(a => new ReflectedPlugin
-                    {
-                        Instance = plug,
-                        InstanceCommand = null,
-                        Method = t.Key,
-                        MethodCommand = a
-                    })));
-                    continue;
-                }
+                    Instance = plug,
+                    InstanceCommand = null,
+                    Method = t.Key,
+                    MethodCommand = a
+                })));
+                return;
+            }
 
-                foreach(var i in ic)
+            foreach (var i in ic)
+            {
+                plugins.AddRange(ms.SelectMany(t => t.Value.Select(a => new ReflectedPlugin
                 {
-                    plugins.AddRange(ms.SelectMany(t => t.Value.Select(a => new ReflectedPlugin
-                    {
-                        Instance = plug,
-                        InstanceCommand = i,
-                        Method = t.Key,
-                        MethodCommand = a
-                    })));
-                }
+                    Instance = plug,
+                    InstanceCommand = i,
+                    Method = t.Key,
+                    MethodCommand = a
+                })));
+            }
+        }
+
+        private void HandleDefaultLoad(IPlugin plug)
+        {
+            var ic = plug.GetType().GetCustomAttributes<Command>().ToArray();
+
+            var ms = plug.GetType()
+                         .GetMethods()
+                         .Where(t => Attribute.IsDefined(t, typeof(Default)))
+                         .ToDictionary(t => t, t => t.GetCustomAttributes<Default>());
+
+            if (ms.Count <= 0)
+                return;
+
+            if (ic.Length <= 0)
+                return;
+
+            foreach(var i in ic)
+            {
+                defaults.AddRange(ms.SelectMany(t => t.Value.Select(a => new ReflectedDefault
+                {
+                    Instance = plug,
+                    InstanceCommand = i,
+                    Method = t.Key,
+                    MethodDefault = a
+                })));
             }
         }
 
@@ -198,7 +256,7 @@ namespace PalApi.Plugins
                 }
             }
         }
-
+        
         private class ReflectedPacket
         {
             public IPlugin Instance { get; set; }
@@ -212,6 +270,14 @@ namespace PalApi.Plugins
             public Command InstanceCommand { get; set; }
             public MethodInfo Method { get; set; }
             public Command MethodCommand { get; set; }
+        }
+
+        private class ReflectedDefault
+        {
+            public IPlugin Instance { get; set; }
+            public Command InstanceCommand { get; set; }
+            public MethodInfo Method { get; set; }
+            public Default MethodDefault { get; set; }
         }
     }
 }
