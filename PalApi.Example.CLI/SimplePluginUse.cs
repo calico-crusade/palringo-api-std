@@ -94,10 +94,10 @@ namespace PalApi.Example.CLI
         /// </summary>
         /// <param name="bot">The bot that is making the request</param>
         /// <param name="msg">The message that triggered the request</param>
-        [Default]
-        public async void OnDefault(IPalBot bot, Message msg)
+        [Default, Command("default")]
+        public async void OnDefault(IPalBot bot, Message msg, string cmd)
         {
-            await bot.Reply(msg, "This was sent because you just used \"!ex\" with no parameters");
+            await bot.Reply(msg, "This was sent because you just used \"!ex\" with no parameters or you used \"!ex default\"");
         }
     }
 }

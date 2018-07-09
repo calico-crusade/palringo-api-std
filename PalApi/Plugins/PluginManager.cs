@@ -79,7 +79,10 @@ namespace PalApi.Plugins
 
                             try
                             {
-                                d.Method.Invoke(d.Instance, new object[] { bot, message });
+                                d.Method.Invoke(d.Instance, 
+                                    d.Method.GetParameters().Length == 3 ?
+                                        new object[] { bot, message, "" } : //Fill in "string cmd" blank.
+                                        new object[] { bot, message });
                                 return;
                             }
                             catch (Exception ex)
