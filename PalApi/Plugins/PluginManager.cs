@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
+    using System.Threading.Tasks;
 
 namespace PalApi.Plugins
 {
     using Delegates;
+    using Networking.Mapping;
     using Types;
     using Utilities;
-    using Networking.Mapping;
 
     public interface IPluginManager
     {
@@ -50,56 +51,23 @@ namespace PalApi.Plugins
 
                 if (plugin.InstanceCommand != null)
                 {
-                    if (!plugin.InstanceCommand.MessageType.HasFlag(message.MesgType))
-                        continue;
-
-                    if (!msg.ToLower().StartsWith(plugin.InstanceCommand.Cmd.ToLower()))
-                        continue;
-
-                    if (!string.IsNullOrEmpty(plugin.InstanceCommand.Roles) && !await roleManager.IsInRole(plugin.InstanceCommand.Roles, bot, message))
+                    if (!await CheckCommand(bot, plugin.InstanceCommand, message, msg))
                         continue;
 
                     msg = msg.Remove(0, plugin.InstanceCommand.Cmd.Length).Trim();
 
                     if (string.IsNullOrEmpty(msg))
                     {
-                        var defs = defaults.Where(t => t.Instance == plugin.Instance).ToArray();
+                        var defs = await DoDefaults(bot, plugin.Instance, message, plugin.InstanceCommand);
 
-                        if (defs.Length <= 0)
+                        if (defs)
                             continue;
-
-                        foreach(var d in defs)
-                        {
-                            if (!d.InstanceCommand.MessageType.HasFlag(message.MesgType))
-                                continue;
-
-                            if (!string.IsNullOrEmpty(d.InstanceCommand.Roles) &&
-                                !await roleManager.IsInRole(d.InstanceCommand.Roles, bot, message))
-                                continue;
-
-                            try
-                            {
-                                d.Method.Invoke(d.Instance, 
-                                    d.Method.GetParameters().Length == 3 ?
-                                        new object[] { bot, message, "" } : //Fill in "string cmd" blank.
-                                        new object[] { bot, message });
-                                return;
-                            }
-                            catch (Exception ex)
-                            {
-                                OnException(ex, $"Error running default plugin {plugin.InstanceCommand?.Cmd} {d.Method.Name} with \"{message.Content}\" from {message.UserId}");
-                            }
-                        }
+                        else
+                            return;
                     }
                 }
 
-                if (!plugin.MethodCommand.MessageType.HasFlag(message.MesgType))
-                    continue;
-
-                if (!msg.ToLower().StartsWith(plugin.MethodCommand.Cmd.ToLower()))
-                    continue;
-
-                if (!string.IsNullOrEmpty(plugin.MethodCommand.Roles) && !await roleManager.IsInRole(plugin.MethodCommand.Roles, bot, message))
+                if (!await CheckCommand(bot, plugin.MethodCommand, message, msg))
                     continue;
 
                 msg = msg.Remove(0, plugin.MethodCommand.Cmd.Length).Trim();
@@ -113,6 +81,60 @@ namespace PalApi.Plugins
                     OnException(ex, $"Error running plugin {plugin.InstanceCommand?.Cmd} {plugin.MethodCommand.Cmd} with \"{message.Content}\" from {message.UserId}");
                 }
             }
+        }
+
+        private async Task<bool> CheckCommand(IPalBot bot, Command cmd, Message message, string msg)
+        {
+            if (!cmd.MessageType.HasFlag(message.MesgType))
+                return false;
+
+            if (!msg.ToLower().StartsWith(cmd.Cmd.ToLower()))
+                return false;
+
+            if (!string.IsNullOrEmpty(cmd.Roles) && !await roleManager.IsInRole(cmd.Roles, bot, message))
+                return false;
+
+            if (!string.IsNullOrEmpty(cmd.Grouping) && 
+                bot.Groupings != null && 
+                bot.Groupings.Length > 0 && 
+                !bot.Groupings.Any(t => 
+                    t.ToLower().Trim() == cmd.Grouping.ToLower().Trim()))
+                return false;
+
+            return true;
+        }
+
+        private async Task<bool> DoDefaults(IPalBot bot, IPlugin plugin, Message message, Command cmd)
+        {
+            var defs = defaults.Where(t => t.Instance == plugin).ToArray();
+
+            if (defs.Length <= 0)
+                return true;
+
+            foreach (var d in defs)
+            {
+                if (!d.InstanceCommand.MessageType.HasFlag(message.MesgType))
+                    continue;
+
+                if (!string.IsNullOrEmpty(d.InstanceCommand.Roles) &&
+                    !await roleManager.IsInRole(d.InstanceCommand.Roles, bot, message))
+                    continue;
+
+                try
+                {
+                    d.Method.Invoke(d.Instance,
+                        d.Method.GetParameters().Length == 3 ?
+                            new object[] { bot, message, "" } : //Fill in "string cmd" blank.
+                            new object[] { bot, message });
+                    return false;
+                }
+                catch (Exception ex)
+                {
+                    OnException(ex, $"Error running default plugin {cmd?.Cmd} {d.Method.Name} with \"{message.Content}\" from {message.UserId}");
+                }
+            }
+
+            return true;
         }
 
         public void Process(IPalBot bot, IPacketMap pkt)

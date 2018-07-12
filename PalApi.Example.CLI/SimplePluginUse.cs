@@ -99,5 +99,11 @@ namespace PalApi.Example.CLI
         {
             await bot.Reply(msg, "This was sent because you just used \"!ex\" with no parameters or you used \"!ex default\"");
         }
+
+        [Command("groupings", Grouping = "TestGroup")]
+        public async void GroupTest(IPalBot bot, Message msg, string cmd)
+        {
+            await bot.Reply(msg, "Grouping allowed.");
+        }
     }
 }

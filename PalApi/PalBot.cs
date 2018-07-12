@@ -31,6 +31,7 @@ namespace PalApi
         bool SpamFilter { get; }
         ExtendedUser Profile { get; }
         bool EnablePlugins { get; }
+        string[] Groupings { get; }
 
         Task<bool> Write(IPacket packet);
         Task<bool> Write(IPacketMap packet);
@@ -40,6 +41,8 @@ namespace PalApi
         IPalBot Error(Action<Exception, string> action);
         IPalBot MessageReceived(Action<IPalBot, Message> action);
         IPalBot CouldNotConnect(Action action);
+
+        IPalBot SetGroupings(params string[] groupings);
     }
 
     public partial class PalBot : IPalBot
@@ -61,6 +64,7 @@ namespace PalApi
         public DeviceType Device { get; private set; }
         public bool SpamFilter { get; private set; }
         public bool EnablePlugins { get; private set; }
+        public string[] Groupings { get; private set; }
         public IRoleManager RoleManager { get; }
         public ISubProfiling SubProfiling { get; }
 
@@ -216,6 +220,12 @@ namespace PalApi
         public IPalBot CouldNotConnect(Action action)
         {
             _couldntConnect = action;
+            return this;
+        }
+
+        public IPalBot SetGroupings(params string[] groupings)
+        {
+            this.Groupings = groupings;
             return this;
         }
 

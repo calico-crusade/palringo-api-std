@@ -22,6 +22,8 @@ namespace PalApi.Cli
                         .UseConsoleLogging()
                         //Call our Register Extension we created for the example
                         .RegisterProjectPlugin()
+                        //Set Groupings for this bot
+                        .SetGroupings("TestGroup")
                         //Add the owner's pal ID to the Authorized users list.
                         .AddAuth(1234)
                         //Print out Login Failed reason
