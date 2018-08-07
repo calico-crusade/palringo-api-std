@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace PalApi
 {
-    using Networking;
     using Networking.Mapping;
     using Types;
 
     public class Message : IPacketMap
     {
-        public string Command => "MESG";
+        public virtual string Command => "MESG";
 
         /// <summary>
         /// The user who sent the message
@@ -64,5 +62,17 @@ namespace PalApi
         /// The group ID or user ID depending on the message type.
         /// </summary>
         public int ReturnAddress => MesgType == MessageType.Private ? UserId : GroupId.Value;
+
+        public Message Clone()
+        {
+            return new Message
+            {
+                UserId = UserId,
+                GroupId = GroupId,
+                Content = Content,
+                MimeType = MimeType,
+                UnsortedTimestamp = UnsortedTimestamp
+            };
+        }
     }
 }

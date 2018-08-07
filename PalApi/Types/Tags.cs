@@ -40,6 +40,6 @@
         /// <summary>
         /// Volunteer tag
         /// </summary>
-        Volunteer = 4
+        Volunteer = 0x200
     }
 }

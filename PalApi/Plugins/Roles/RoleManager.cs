@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 
-namespace PalApi.Plugins
+namespace PalApi.Plugins.Roles
 {
     using Types;
     using Utilities;

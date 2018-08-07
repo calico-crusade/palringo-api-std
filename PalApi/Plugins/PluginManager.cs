@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
-    using System.Threading.Tasks;
+using System.Threading.Tasks;
 
 namespace PalApi.Plugins
 {
+    using Comparitors;
     using Delegates;
     using Networking.Mapping;
+    using Linguistics;
     using Types;
+    using Roles;
     using Utilities;
 
     public interface IPluginManager
@@ -28,6 +31,8 @@ namespace PalApi.Plugins
         private List<ReflectedPacket> packets;
         private List<ReflectedDefault> defaults;
 
+        private List<IComparitorProfile> comparitors;
+
         private IReflectionUtility reflection;
         private IRoleManager roleManager;
 
@@ -35,6 +40,7 @@ namespace PalApi.Plugins
         {
             this.reflection = reflection;
             this.roleManager = roleManager;
+            comparitors = new List<IComparitorProfile> { new LanguageComparitor(), new CommandComparitor() };
         }
 
         private async void ProcessMessage(IPalBot bot, Message message)
@@ -48,13 +54,22 @@ namespace PalApi.Plugins
             foreach(var plugin in plugins)
             {
                 string msg = message.Content.Trim();
+                Message tmpM = message.Clone();
+
+                if (message is LangMessage)
+                    ((LangMessage)message).LanguageKey = null;
 
                 if (plugin.InstanceCommand != null)
                 {
-                    if (!await CheckCommand(bot, plugin.InstanceCommand, message, msg))
+                    if (!string.IsNullOrEmpty(plugin.InstanceCommand.Roles) && 
+                        !await roleManager.IsInRole(plugin.InstanceCommand.Roles, bot, message))
                         continue;
 
-                    msg = msg.Remove(0, plugin.InstanceCommand.Cmd.Length).Trim();
+                    var c2 = CheckCommand(bot, plugin.InstanceCommand, message, msg, out tmpM);
+                    if (c2 == null)
+                        continue;
+
+                    msg = c2;
 
                     if (string.IsNullOrEmpty(msg))
                     {
@@ -67,44 +82,52 @@ namespace PalApi.Plugins
                     }
                 }
 
-                if (!await CheckCommand(bot, plugin.MethodCommand, message, msg))
+                if (!string.IsNullOrEmpty(plugin.MethodCommand.Roles) &&
+                    !await roleManager.IsInRole(plugin.MethodCommand.Roles, bot, message))
                     continue;
 
-                msg = msg.Remove(0, plugin.MethodCommand.Cmd.Length).Trim();
+                var c = CheckCommand(bot, plugin.MethodCommand, tmpM, msg, out tmpM);
+                if (c == null)
+                    continue;
+
+                msg = c;
                 
                 try
                 {
-                    plugin.Method.Invoke(plugin.Instance, new object[] { bot, message, msg });
+                    plugin.Method.Invoke(plugin.Instance, new object[] { bot, tmpM, msg });
                 }
                 catch (Exception ex)
                 {
-                    OnException(ex, $"Error running plugin {plugin.InstanceCommand?.Cmd} {plugin.MethodCommand.Cmd} with \"{message.Content}\" from {message.UserId}");
+                    OnException(ex, $"Error running plugin {plugin.InstanceCommand?.Comparitor} {plugin.MethodCommand.Comparitor} with \"{message.Content}\" from {message.UserId}");
                 }
             }
         }
 
-        private async Task<bool> CheckCommand(IPalBot bot, Command cmd, Message message, string msg)
+        private string CheckCommand(IPalBot bot, ICommand cmd, Message message, string msg, out Message msgToUser)
         {
+            msgToUser = message;
             if (!cmd.MessageType.HasFlag(message.MesgType))
-                return false;
-
-            if (!msg.ToLower().StartsWith(cmd.Cmd.ToLower()))
-                return false;
-
-            if (!string.IsNullOrEmpty(cmd.Roles) && !await roleManager.IsInRole(cmd.Roles, bot, message))
-                return false;
+                return null;
 
             if (!string.IsNullOrEmpty(cmd.Grouping) && 
                 bot.Groupings != null && 
                 bot.Groupings.Length > 0 && 
                 !bot.Groupings.Any(t => 
                     t.ToLower().Trim() == cmd.Grouping.ToLower().Trim()))
-                return false;
+                return null;
 
-            return true;
+            var comp = comparitors.FirstOrDefault(t => t.AttributeType == cmd.GetType());
+            if (comp == null)
+                return null;
+
+
+            if (comp.IsMatch(bot, message, msg, cmd, out string capped, out msgToUser))
+                return capped.Trim();
+
+            return null;
         }
 
-        private async Task<bool> DoDefaults(IPalBot bot, IPlugin plugin, Message message, Command cmd)
+        private async Task<bool> DoDefaults(IPalBot bot, IPlugin plugin, Message message, ICommand cmd)
         {
             var defs = defaults.Where(t => t.Instance == plugin).ToArray();
 
@@ -130,7 +153,7 @@ namespace PalApi.Plugins
                 }
                 catch (Exception ex)
                 {
-                    OnException(ex, $"Error running default plugin {cmd?.Cmd} {d.Method.Name} with \"{message.Content}\" from {message.UserId}");
+                    OnException(ex, $"Error running default plugin {cmd?.Comparitor} {d.Method.Name} with \"{message.Content}\" from {message.UserId}");
                 }
             }
 
@@ -181,12 +204,12 @@ namespace PalApi.Plugins
 
         private void HandlePluginLoad(IPlugin plug)
         {
-            var ic = plug.GetType().GetCustomAttributes<Command>().ToArray();
+            var ic = plug.GetType().GetCustomAttributes<BaseCommand>().ToArray();
 
             var ms = plug.GetType()
                          .GetMethods()
-                         .Where(t => Attribute.IsDefined(t, typeof(Command)))
-                         .ToDictionary(t => t, t => t.GetCustomAttributes<Command>());
+                         .Where(t => Attribute.IsDefined(t, typeof(BaseCommand)))
+                         .ToDictionary(t => t, t => t.GetCustomAttributes<BaseCommand>());
 
             if (ms.Count <= 0)
                 return;
@@ -241,7 +264,7 @@ namespace PalApi.Plugins
                 })));
             }
         }
-
+        
         private void LoadPacketReflectors()
         {
             packets = new List<ReflectedPacket>();
@@ -292,15 +315,15 @@ namespace PalApi.Plugins
         private class ReflectedPlugin
         {
             public IPlugin Instance { get; set; }
-            public Command InstanceCommand { get; set; }
+            public ICommand InstanceCommand { get; set; }
             public MethodInfo Method { get; set; }
-            public Command MethodCommand { get; set; }
+            public ICommand MethodCommand { get; set; }
         }
 
         private class ReflectedDefault
         {
             public IPlugin Instance { get; set; }
-            public Command InstanceCommand { get; set; }
+            public ICommand InstanceCommand { get; set; }
             public MethodInfo Method { get; set; }
             public Default MethodDefault { get; set; }
         }

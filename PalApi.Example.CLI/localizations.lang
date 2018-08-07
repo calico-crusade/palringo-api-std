@@ -1,0 +1,62 @@
+﻿#########################################
+## BESURE TO MARK THIS AS "Aways Copy" ##
+## IN THE PROJECT PROPERTIES OTHERWISE ##
+##      LOCALIZATION WON'T WORK!	   ##
+#########################################
+
+#########################################
+##				  USAGE                ##
+#########################################
+## To comment, put ## before the line  ##
+#########################################
+## To start a new language wrap the    ##
+## language key in [] everything until ##
+## the next [] will be in 1 language   ##
+#########################################
+## Random new lines will be removed by ##
+## default, to perserve spacing        ##
+#########################################
+## Everything before the first "=" is  ##
+## the "Text ID", everything after is  ##
+## the text of the localization        ##
+#########################################
+## All trailing and leading spaces     ##
+## will be trimmed, don't count on     ##
+## them being in the final text        ##
+#########################################
+## Newlines can be added by using the  ##
+## escaped version of "\r\n", tabs can ##
+## be used with just the tab character ##
+## no other special character is used  ##
+#########################################
+## The API supports using parameters   ##
+## in the Reply, Group and Private     ##
+## methods on the bot, so you can use  ##
+## them as you would a string.Format() ##
+## Examples of this are below. Check   ##
+## out the LanguagePlugin.cs for more! ##
+#########################################
+## Once you get the hang of it, feel   ##
+## free to delete this message, I seem ##
+## to be rambling at this point, and I ##
+## really wish I had chosen more chars ##
+## when I started formatting the help  ##
+## text like this... /).-              ##
+#########################################
+
+##creating fake language called "forward-en"
+[forward-en]
+plugin = !f
+plugin.command = test
+plugin.response = Hello World
+plugin.cant = hello {0}! This is langauge {1}
+
+##Create another fake language called "reverse-en" (Reverse english) as a test
+[reverse-en]
+plugin = !rs
+plugin.command = tset
+plugin.response = dlorW olleH
+
+##To add new lines to a localization you can add them as escaped like: \r\n. Example below
+##The localizations are automatically space trimmed after the first "=", any leading or trailing spaces will be removed.
+plugin.cant = hello {0} in reverse! This is language {1}\r\nThis one contains a new line!! And trailing spaces                  

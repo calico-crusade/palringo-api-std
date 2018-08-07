@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace PalApi.Utilities
 {
@@ -81,6 +82,18 @@ namespace PalApi.Utilities
         {
             return container.GetInstance<T>();
         }
+
+        //public async Task<object> ExecuteMethod(MethodInfo info, object instance, params object[] knownParams)
+        //{
+        //    try
+        //    {
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return ex;
+        //    }
+        //}
 
         public object GetInstance(Type type)
         {

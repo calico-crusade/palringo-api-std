@@ -34,6 +34,8 @@ namespace PalApi.Cli
                         .Error((error, note) => Console.WriteLine("An error occurred: " + note + "\r\nStack Trace: " + error.ToString()))
                         //Print out that the bot coulnd't connect
                         .CouldNotConnect(() => Console.WriteLine("Bot could not connect to Palringo"))
+                        //Load localizations - Don't include this if you aren't going to use localizations (multiple languages)
+                        .LanguagesFromFlatFile("localizations.lang")
                         //Start the login sequence. Only Email and Password are required. Rest will default
                         .Login(
                             //Email Address

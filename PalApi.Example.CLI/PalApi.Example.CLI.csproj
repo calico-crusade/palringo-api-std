@@ -15,4 +15,10 @@
     <ProjectReference Include="..\PalApi\PalApi.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="localizations.lang">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

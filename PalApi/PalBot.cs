@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace PalApi
 {
@@ -12,9 +13,11 @@ namespace PalApi
     using Types;
     using Utilities;
     using Plugins;
-    using System;
+    using Plugins.Linguistics;
+    using Plugins.Linguistics.StorageType;
+    using Plugins.Roles;
 
-    public interface IPalBot : IPalBotSenders
+    public interface IPalBot : IPalBotLinguistics
     {
         event VoidCarrier OnDisconnected;
         event ExceptionCarrier OnException;
@@ -32,6 +35,7 @@ namespace PalApi
         ExtendedUser Profile { get; }
         bool EnablePlugins { get; }
         string[] Groupings { get; }
+        LinguisticsEngine Languages { get; }
 
         Task<bool> Write(IPacket packet);
         Task<bool> Write(IPacketMap packet);
@@ -43,6 +47,10 @@ namespace PalApi
         IPalBot CouldNotConnect(Action action);
 
         IPalBot SetGroupings(params string[] groupings);
+
+        IPalBot LanguagesFromJson(string filePath);
+        IPalBot LanguagesFromFlatFile(string filePath);
+        IPalBot LanguagesFrom(ILocalizationStorage storage);
     }
 
     public partial class PalBot : IPalBot
@@ -65,6 +73,7 @@ namespace PalApi
         public bool SpamFilter { get; private set; }
         public bool EnablePlugins { get; private set; }
         public string[] Groupings { get; private set; }
+        public LinguisticsEngine Languages { get; private set; }
         public IRoleManager RoleManager { get; }
         public ISubProfiling SubProfiling { get; }
 
@@ -226,6 +235,22 @@ namespace PalApi
         public IPalBot SetGroupings(params string[] groupings)
         {
             this.Groupings = groupings;
+            return this;
+        }
+
+        public IPalBot LanguagesFromJson(string filePath)
+        {
+            return LanguagesFrom(LocalizationStorageJson.Create(filePath));
+        }
+
+        public IPalBot LanguagesFromFlatFile(string filePath)
+        {
+            return LanguagesFrom(LocalizationStorageFlatFile.Create(filePath));
+        }
+
+        public IPalBot LanguagesFrom(ILocalizationStorage storage)
+        {
+            Languages = new LinguisticsEngine(storage);
             return this;
         }
 
