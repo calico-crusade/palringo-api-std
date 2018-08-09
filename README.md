@@ -6,6 +6,9 @@
 # PalringoAPI for .net standard 2.0
 A complete rewrite of the original [PalringoAPI](https://github.com/calico-crusade/PalringoApi) in .net standard 2.0
 
+# PalApi Version 1.0.16
+Please do not use V 1.0.16 of the PalApi on Nuget. Update to 1.0.17+ if you are using it. The wrong binary was uploaded and a lot of the features are no longer available in this version. The package is no longer listed on Nuget to avoid people using it accidentally.
+
 # Where can I use it?
 I have tested it on Windows (.net Framework 4.5.1+ & Core 2.0) and on Mac (Core 2.0). Anyone want to test on linux for me? ;)
 
