@@ -251,6 +251,8 @@ namespace PalApi
         public IPalBot LanguagesFrom(ILocalizationStorage storage)
         {
             Languages = new LinguisticsEngine(storage);
+            //Include error handling to primary handler.
+            storage.OnError += (e, n) => OnException(e, n);
             return this;
         }
 
