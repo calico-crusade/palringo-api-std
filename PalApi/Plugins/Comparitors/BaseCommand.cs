@@ -7,9 +7,9 @@ namespace PalApi.Plugins.Comparitors
     public abstract class BaseCommand : Attribute, ICommand
     {
         public virtual string Comparitor { get; }
-        public virtual MessageType MessageType { get; set; }
-        public virtual string Roles { get; set; }
-        public virtual string Grouping { get; set; }
+        public virtual MessageType MessageType { get; set; } = MessageType.Group | MessageType.Private;
+        public virtual string Roles { get; set; } = null;
+        public virtual string Grouping { get; set; } = null;
 
         public BaseCommand(string comp)
         {
