@@ -60,6 +60,9 @@ namespace PalApi.Networking
         /// When a client disconnects from the system
         /// </summary>
         public event NetworkClientCarrier OnDisconnected = delegate { };
+        /// <summary>
+        /// When data is received by the client
+        /// </summary>
         public event NetworkDataCarrier OnDataReceived = delegate { };
 
         /// <summary>

@@ -5,27 +5,24 @@ using System.Linq;
 
 namespace PalApi.Networking.Handling
 {
-    using Delegates;
     using Mapping;
     using Utilities;
 
     public interface IPacketHandlerHub
     {
-        event ExceptionCarrier OnException;
-
         void ProcessPacket(PalBot bot, IPacketMap packet);
     }
 
     public class PacketHandlerHub : IPacketHandlerHub
     {
-        public event ExceptionCarrier OnException = delegate { };
-
         private IReflectionUtility reflection;
         private List<PacketHandlers> packetHandlers;
+        private BroadcastUtility broadcast;
 
-        public PacketHandlerHub(IReflectionUtility reflection)
+        public PacketHandlerHub(IReflectionUtility reflection, IBroadcastUtility broadcast)
         {
             this.reflection = reflection;
+            this.broadcast = (BroadcastUtility)broadcast;
         }
 
         private void LoadHandlers()
@@ -62,7 +59,7 @@ namespace PalApi.Networking.Handling
                     var packet = (IPacketMap)Activator.CreateInstance(first.ParameterType);
                     if (hndlr.Handlers.ContainsKey(packet.Command.ToUpper()))
                     {
-                        OnException(new Exception(), $"Handler already exists in {method.Name} for {packet.Command}");
+                        broadcast.BroadcastException(new Exception(), $"Handler already exists in {method.Name} for {packet.Command}");
                         continue;
                     }
 
@@ -90,7 +87,7 @@ namespace PalApi.Networking.Handling
                 }
                 catch (Exception ex)
                 {
-                    OnException(ex, $"Error processing handler {method.Name} for {packet.Command.ToUpper()}");
+                    broadcast.BroadcastException(ex, $"Error processing handler {method.Name} for {packet.Command.ToUpper()}");
                 }
             }
 

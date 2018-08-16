@@ -36,16 +36,18 @@ namespace PalApi.Cli
                         .CouldNotConnect(() => Console.WriteLine("Bot could not connect to Palringo"))
                         //Load localizations - Don't include this if you aren't going to use localizations (multiple languages)
                         .LanguagesFromFlatFile("localizations.lang")
+                        //Automatically relogin when the bot gets throttled
+                        .ReloginOnThrottle()
                         //Start the login sequence. Only Email and Password are required. Rest will default
                         .Login(
                             //Email Address
                             "example@test.com", 
                             //Password
-                            "asdf", 
+                            "asdf",
                             //Authorization Status (Away, Invisible, Online, ect)
-                            AuthStatus.Away, 
+                            AuthStatus.Away,
                             //What device to mask the bot as (Suggest PC / Web / Generic)
-                            DeviceType.Generic, 
+                            DeviceType.Generic,
                             //Span filter (Suggest false, cause its a bot...)
                             false);
         }

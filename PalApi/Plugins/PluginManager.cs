@@ -16,17 +16,11 @@ namespace PalApi.Plugins
 
     public interface IPluginManager
     {
-        event ExceptionCarrier OnException;
-        event MessageCarrier OnMessage;
-
         void Process(IPalBot bot, IPacketMap pkt);
     }
 
     public class PluginManager : IPluginManager
     {
-        public event ExceptionCarrier OnException = delegate { };
-        public event MessageCarrier OnMessage = delegate { };
-
         private List<ReflectedPlugin> plugins;
         private List<ReflectedPacket> packets;
         private List<ReflectedDefault> defaults;
@@ -35,11 +29,13 @@ namespace PalApi.Plugins
 
         private IReflectionUtility reflection;
         private IRoleManager roleManager;
+        private BroadcastUtility broadcast;
 
-        public PluginManager(IReflectionUtility reflection, IRoleManager roleManager)
+        public PluginManager(IReflectionUtility reflection, IRoleManager roleManager, IBroadcastUtility broadcast)
         {
             this.reflection = reflection;
             this.roleManager = roleManager;
+            this.broadcast = (BroadcastUtility)broadcast;
             comparitors = new List<IComparitorProfile> { new LanguageComparitor(), new CommandComparitor() };
         }
 
@@ -98,7 +94,7 @@ namespace PalApi.Plugins
                 }
                 catch (Exception ex)
                 {
-                    OnException(ex, $"Error running plugin {plugin.InstanceCommand?.Comparitor} {plugin.MethodCommand.Comparitor} with \"{message.Content}\" from {message.UserId}");
+                    broadcast.BroadcastException(ex, $"Error running plugin {plugin.InstanceCommand?.Comparitor} {plugin.MethodCommand.Comparitor} with \"{message.Content}\" from {message.UserId}");
                 }
             }
         }
@@ -153,7 +149,7 @@ namespace PalApi.Plugins
                 }
                 catch (Exception ex)
                 {
-                    OnException(ex, $"Error running default plugin {cmd?.Comparitor} {d.Method.Name} with \"{message.Content}\" from {message.UserId}");
+                    broadcast.BroadcastException(ex, $"Error running default plugin {cmd?.Comparitor} {d.Method.Name} with \"{message.Content}\" from {message.UserId}");
                 }
             }
 
@@ -166,7 +162,7 @@ namespace PalApi.Plugins
             {
                 var msg = (Message)pkt;
                 ProcessMessage(bot, msg);
-                OnMessage(bot, msg);
+                broadcast.BroadcastMessage(bot, msg);
                 return;
             }
 
@@ -183,7 +179,7 @@ namespace PalApi.Plugins
                 }
                 catch (Exception ex)
                 {
-                    OnException(ex, $"Error running packet watcher {reflect.Command}");
+                    broadcast.BroadcastException(ex, $"Error running packet watcher {reflect.Command}");
                 }
             }
         }

@@ -5,13 +5,10 @@ using System.Text;
 
 namespace PalApi.Networking
 {
-    using Delegates;
+    using Utilities;
 
     public interface IPacketDeserializer
     {
-        event NetworkPacketCarrier OnPacketParsed;
-        event ExceptionCarrier OnException;
-
         void ReadPacket(INetworkClient client, byte[] data);
     }
 
@@ -22,10 +19,14 @@ namespace PalApi.Networking
         public static byte[] NewLine => new byte[] { (byte)'\r', (byte)'\n' };
         public static byte HeaderCharacter => (byte)':';
 
-        public event NetworkPacketCarrier OnPacketParsed = delegate { };
-        public event ExceptionCarrier OnException = delegate { };
-        
         private byte[] overflow;
+
+        private BroadcastUtility broadcast;
+
+        public PacketDeserializer(IBroadcastUtility broadcast)
+        {
+            this.broadcast = (BroadcastUtility)broadcast;
+        }
 
         public void ReadPacket(INetworkClient client, byte[] prestine)
         {
@@ -63,7 +64,7 @@ namespace PalApi.Networking
 
                 if (data.Length <= 0)
                 {
-                    OnPacketParsed(client, pack);
+                    broadcast.BroadcastPacketParsed(client, pack);
                     overflow = null;
                     return;
                 }
@@ -88,7 +89,7 @@ namespace PalApi.Networking
 
                 if (pack.ContentLength == 0)
                 {
-                    OnPacketParsed(client, pack);
+                    broadcast.BroadcastPacketParsed(client, pack);
                     overflow = null;
                     return;
                 }
@@ -96,7 +97,7 @@ namespace PalApi.Networking
                 if (pack.ContentLength == data.Length)
                 {
                     pack.Payload = data;
-                    OnPacketParsed(client, pack);
+                    broadcast.BroadcastPacketParsed(client, pack);
                     overflow = null;
                     return;
                 }
@@ -116,11 +117,11 @@ namespace PalApi.Networking
 
                 pack.Payload = data.Take(pack.ContentLength).ToArray();
                 overflow = pack.Command == "RESPONSE" ? null : data.Skip(pack.ContentLength).ToArray();
-                OnPacketParsed(client, pack);
+                broadcast.BroadcastPacketParsed(client, pack);
             }
             catch (Exception ex)
             {
-                OnException(ex, "Error parsing packet");
+                broadcast.BroadcastException(ex, "Error parsing packet");
             }
         }
 

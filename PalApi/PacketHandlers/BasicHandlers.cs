@@ -7,17 +7,19 @@
     using SubProfile.Parsing;
     using Plugins;
     using Types;
-    using System;
+    using Utilities;
 
     public class BasicHandlers : IPacketHandler
     {
         private IPacketTemplates templates;
         private IPluginManager pluginManager;
+        private BroadcastUtility broadcast;
 
-        public BasicHandlers(IPacketTemplates templates, IPluginManager pluginManager)
+        public BasicHandlers(IPacketTemplates templates, IPluginManager pluginManager, IBroadcastUtility broadcast)
         {
             this.templates = templates;
             this.pluginManager = pluginManager;
+            this.broadcast = (BroadcastUtility)broadcast;
         }
 
         public async void PingHandler(PingRequest ping, IPalBot bot)
@@ -55,6 +57,7 @@
         public void GroupUpdateHandler(GroupUpdate update, IPalBot bot)
         {
             var map = update.Payload;
+            broadcast.BroadcastGroupUpdate(bot, update);
 
             if (!((PalBot)bot).SubProfiling.Users.ContainsKey(update.UserId))
                 ((PalBot)bot).SubProfiling.Users.Add(update.UserId, new User(update.UserId));
@@ -83,13 +86,27 @@
                     ((PalBot)bot).SubProfiling.Groups[update.GroupId].Members.Add(update.UserId, Role.User);
                 return;
             }
-
-            
         }
 
-        public void AdminActionHandler(AdminAction action, IPalBot bot)
+        public void AdminActionHandler(AdminAction action, IPalBot oBot)
         {
-            Console.WriteLine("Action happened: " + action);
+            var bot = (PalBot)oBot;
+
+            if (!bot.SubProfiling.Groups.ContainsKey(action.GroupId))
+                return;
+
+            var group = bot.SubProfiling.Groups[action.GroupId];
+
+            if (!group.Members.ContainsKey(action.TargetId))
+                return;
+
+            group.Members[action.TargetId] = action.Action.ToRole();
+            broadcast.BroadcastAdminAction(bot, action);
+        }
+
+        public void ThrottleHandler(Throttle throttle, IPalBot bot)
+        {
+            broadcast.BroadcastThrottle(bot, throttle);
         }
     }
 }

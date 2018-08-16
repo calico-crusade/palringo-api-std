@@ -5,13 +5,11 @@ using System.Threading.Tasks;
 
 namespace PalApi.Networking.Watcher
 {
-    using Delegates;
     using Mapping;
+    using Utilities;
 
     public interface IPacketWatcher
     {
-        event ExceptionCarrier OnException;
-
         void Process(IPacketMap map);
         Task<T> Subscribe<T>(Func<T, bool> validator) where T : IPacketMap;
         Task<T> Subscribe<T>() where T : IPacketMap;
@@ -25,8 +23,13 @@ namespace PalApi.Networking.Watcher
 
     public class PacketWatcher : IPacketWatcher
     {
-        public event ExceptionCarrier OnException = delegate { };
-        
+        private BroadcastUtility broadcast;
+
+        public PacketWatcher(IBroadcastUtility broadcast)
+        {
+            this.broadcast = (BroadcastUtility)broadcast;
+        }
+
         private List<IWatch> watches = new List<IWatch>();
         
         public async Task<T> Subscribe<T, T2>()
@@ -122,7 +125,7 @@ namespace PalApi.Networking.Watcher
                 }
                 catch (Exception ex)
                 {
-                    OnException(ex, "Error running validator for " + map.Command);
+                    broadcast.BroadcastException(ex, "Error running validator for " + map.Command);
                 }
             }
         }

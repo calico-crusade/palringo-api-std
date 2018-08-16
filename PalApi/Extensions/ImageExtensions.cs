@@ -71,22 +71,32 @@ namespace PalApi
             }
         }
 
-        public static async Task<Bitmap> Avatar(this User user)
+        public static async Task<Bitmap> UserAvatar(this int userId)
         {
             using (var client = new WebClient())
             {
-                var data = await client.DownloadDataTaskAsync(string.Format(UserAvatarUrl, user.Id));
+                var data = await client.DownloadDataTaskAsync(string.Format(UserAvatarUrl, userId));
+                return data.ToBitmap();
+            }
+        }
+
+        public static async Task<Bitmap> Avatar(this User user)
+        {
+            return await UserAvatar(user.Id);
+        }
+
+        public static async Task<Bitmap> GroupAvatar(this int groupId)
+        {
+            using (var client = new WebClient())
+            {
+                var data = await client.DownloadDataTaskAsync(string.Format(GroupAvatarUrl, groupId));
                 return data.ToBitmap();
             }
         }
 
         public static async Task<Bitmap> Avatar(this Group group)
         {
-            using (var client = new WebClient())
-            {
-                var data = await client.DownloadDataTaskAsync(string.Format(GroupAvatarUrl, group.Id));
-                return data.ToBitmap();
-            }
+            return await GroupAvatar(group.Id);
         }
 
         public static GraphicsPath RoundedRect(Rectangle bounds, int radius)

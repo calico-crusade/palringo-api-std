@@ -4,13 +4,11 @@ using System.Linq;
 
 namespace PalApi.SubProfile
 {
-    using Delegates;
     using Parsing;
+    using Utilities;
 
     public interface ISubProfiling
     {
-        event ExceptionCarrier OnException;
-
         Dictionary<int, Group> Groups { get; }
 
         Dictionary<int, User> Users { get; }
@@ -26,7 +24,7 @@ namespace PalApi.SubProfile
 
     public class SubProfiling : ISubProfiling
     {
-        public event ExceptionCarrier OnException = delegate { };
+        private BroadcastUtility broadcast;
 
         public Dictionary<int, Group> Groups { get; set; } = new Dictionary<int, Group>();
 
@@ -37,6 +35,11 @@ namespace PalApi.SubProfile
         public Dictionary<Group, IEnumerable<GroupUser>> GroupUsers => GetGroupUsers();
 
         public ExtendedUser Profile { get; } = new ExtendedUser();
+
+        public SubProfiling(IBroadcastUtility broadcast)
+        {
+            this.broadcast = (BroadcastUtility)broadcast;
+        }
 
         public void Process(byte[] data, int? iv, int? rk)
         {
@@ -100,7 +103,7 @@ namespace PalApi.SubProfile
             }
             catch (Exception ex)
             {
-                OnException(ex, "Error parsing sub profile data");
+                broadcast.BroadcastException(ex, "Error parsing sub profile data");
             }
         }
         

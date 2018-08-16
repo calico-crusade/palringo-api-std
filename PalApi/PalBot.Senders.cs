@@ -241,9 +241,9 @@ namespace PalApi
 
             if (resp.Packet is LoginFailed)
             {
-                var reason = ((LoginFailed)resp.Packet).Reason;
-                _loginFailed?.Invoke(reason);
-                OnLoginFailed(reason);
+                var pk = (LoginFailed)resp.Packet;
+                _loginFailed?.Invoke(pk.Reason);
+                broadcast.BroadcastLoginFailed(this, pk);
                 return false;
             }
 
@@ -262,9 +262,9 @@ namespace PalApi
 
             if (balanceQuery.Packet is LoginFailed)
             {
-                var reason = ((LoginFailed)balanceQuery.Packet).Reason;
-                _loginFailed?.Invoke(reason);
-                OnLoginFailed(reason);
+                var pk = (LoginFailed)resp.Packet;
+                _loginFailed?.Invoke(pk.Reason);
+                broadcast.BroadcastLoginFailed(this, pk);
                 return false;
             }
 

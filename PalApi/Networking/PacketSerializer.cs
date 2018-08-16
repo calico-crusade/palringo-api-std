@@ -5,23 +5,26 @@ using System.Text;
 
 namespace PalApi.Networking
 {
-    using Delegates;
+    using Utilities;
 
     public interface IPacketSerializer
     {
-        event ExceptionCarrier OnException;
-
         IEnumerable<byte[]> Serialize(IPacket packet);
     }
 
     public class PacketSerializer : IPacketSerializer
     {
-        public event ExceptionCarrier OnException = delegate { };
+        private BroadcastUtility broadcast;
 
         public const int MaxPayloadSize = 512;
         public static Encoding Outbound = Encoding.UTF8;
         
         private long messageId = 1;
+
+        public PacketSerializer(IBroadcastUtility broadcast)
+        {
+            this.broadcast = (BroadcastUtility)broadcast;
+        }
 
         public IEnumerable<byte[]> Serialize(IPacket packet)
         {
@@ -68,7 +71,7 @@ namespace PalApi.Networking
             }
             catch (Exception ex)
             {
-                OnException(ex, "Error serializing packet");
+                broadcast.BroadcastException(ex, "Error serializing packet");
                 msgId = -1;
                 return new byte[0];
             }

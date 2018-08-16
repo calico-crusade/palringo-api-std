@@ -7,23 +7,23 @@ namespace PalApi
         public static IPalBot UseConsoleLogging(this IPalBot bot, bool logUnhandled = false)
         {
             if (logUnhandled)
-                bot.OnUnhandledPacket += (p) =>
+                bot.On.UnhandledPacket += (p) =>
                     Extensions.ColouredConsole($"^w[^g{DateTime.Now.ToString("yyyy-MM-dd HH:mm")}^w] ^rUNHANDLED ^w{p.Command}");
 
-            bot.OnPacketReceived += (p) =>
+            bot.On.PacketReceived += (p) =>
                 Extensions.ColouredConsole($"^w[^g{DateTime.Now.ToString("yyyy-MM-dd HH:mm")}^w] ^c<< ^w{p.Command} - ^b{p.ContentLength}");
 
-            bot.OnPacketSent += (p) =>
+            bot.On.PacketSent += (p) =>
                 Extensions.ColouredConsole($"^w[^g{DateTime.Now.ToString("yyyy-MM-dd HH:mm")}^w] ^e>> ^w{p.Command} - ^b{p.ContentLength}");
 
-            bot.OnDisconnected += () =>
+            bot.On.Disconnected += () =>
                 Extensions.ColouredConsole($"^w[^g{DateTime.Now.ToString("yyyy-MM-dd HH:mm")}^w] ^yDisconnected..");
 
-            bot.OnException += (e, n) =>
+            bot.On.Exception += (e, n) =>
                 Extensions.ColouredConsole($"^w[^g{DateTime.Now.ToString("yyyy-MM-dd HH:mm")}^w] ^rERROR {n} - {e.ToString()}");
 
-            bot.OnLoginFailed += (r) =>
-                Extensions.ColouredConsole($"^w[^g{DateTime.Now.ToString("yyyy-MM-dd HH:mm")}^w] ^rLogin Failed: {r}");
+            bot.On.LoginFailed += (b, r) =>
+                Extensions.ColouredConsole($"^w[^g{DateTime.Now.ToString("yyyy-MM-dd HH:mm")}^w] ^rLogin Failed: {r.Reason}");
 
             return bot;
         }
@@ -51,7 +51,12 @@ namespace PalApi
         }
         public static IPalBot AutoReconnect(this IPalBot bot)
         {
-            bot.OnDisconnected += () => bot.Login(bot.Email, bot.Password, bot.Status, bot.Device, bot.SpamFilter);
+            bot.On.Disconnected += async () => await bot.Login(bot.Email, bot.Password, bot.Status, bot.Device, bot.SpamFilter);
+            return bot;
+        }
+        public static IPalBot ReloginOnThrottle(this IPalBot bot)
+        {
+            bot.On.Throttle += async (b, c) => await b.Login(b.Email, b.Password, b.Status, b.Device, b.SpamFilter, b.EnablePlugins);
             return bot;
         }
     }
