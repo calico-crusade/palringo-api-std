@@ -73,8 +73,8 @@ namespace PalApi.Plugins
 
                         if (defs)
                             continue;
-                        else
-                            return;
+
+                        return;
                     }
                 }
 
@@ -90,13 +90,26 @@ namespace PalApi.Plugins
                 
                 try
                 {
-                    plugin.Method.Invoke(plugin.Instance, new object[] { bot, tmpM, msg });
+                    ExecuteMethod(plugin.Method, plugin.Instance, bot, tmpM, msg);
                 }
                 catch (Exception ex)
                 {
                     broadcast.BroadcastException(ex, $"Error running plugin {plugin.InstanceCommand?.Comparitor} {plugin.MethodCommand.Comparitor} with \"{message.Content}\" from {message.UserId}");
                 }
             }
+        }
+
+        private void ExecuteMethod(MethodInfo info, object def, params object[] pars)
+        {
+            if (info.ReturnType == typeof(Task<>) ||
+                info.ReturnType == typeof(Task))
+            {
+                dynamic res = info.Invoke(def, pars);
+                res.Wait();
+                return;
+            }
+
+            info.Invoke(def, pars);
         }
 
         private string CheckCommand(IPalBot bot, ICommand cmd, Message message, string msg, out Message msgToUser)
