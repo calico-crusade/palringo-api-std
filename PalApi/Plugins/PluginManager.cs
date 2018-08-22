@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PalApi.Plugins
@@ -87,15 +88,19 @@ namespace PalApi.Plugins
                     continue;
 
                 msg = c;
-                
-                try
+
+                new Thread(() =>
                 {
-                    ExecuteMethod(plugin.Method, plugin.Instance, bot, tmpM, msg);
-                }
-                catch (Exception ex)
-                {
-                    broadcast.BroadcastException(ex, $"Error running plugin {plugin.InstanceCommand?.Comparitor} {plugin.MethodCommand.Comparitor} with \"{message.Content}\" from {message.UserId}");
-                }
+                    try
+                    {
+                        ExecuteMethod(plugin.Method, plugin.Instance, bot, tmpM, msg);
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        broadcast.BroadcastException(ex, $"Error running plugin {plugin.InstanceCommand?.Comparitor} {plugin.MethodCommand.Comparitor} with \"{message.Content}\" from {message.UserId}");
+                    }
+                }).Start();
             }
         }
 

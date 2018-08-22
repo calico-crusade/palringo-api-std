@@ -129,7 +129,6 @@ namespace PalApi
                 return false;
 
             var serialized = packetSerializer.Serialize(packet);
-
             bool worked = false;
 
             foreach (var data in serialized)
@@ -141,6 +140,27 @@ namespace PalApi
                 ((BroadcastUtility)On).BroadcastPacketSent(packet);
 
             return worked;
+        }
+
+        public async Task<T> Write<T>(IPacket packet, Func<Task<T>> onSerailized)
+        {
+            if (!_client?.Connected ?? false)
+                return default(T);
+
+            var serialized = packetSerializer.Serialize(packet);
+            bool worked = false;
+
+            var output = onSerailized.Invoke();
+
+            foreach (var data in serialized)
+            {
+                worked = await _client.WriteData(data);
+            }
+
+            if (worked)
+                ((BroadcastUtility)On).BroadcastPacketSent(packet);
+
+            return worked ? await output : default(T);
         }
 
         public async Task<bool> Write(IPacketMap map)

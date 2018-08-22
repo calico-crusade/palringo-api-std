@@ -76,9 +76,9 @@ namespace PalApi
         {
             var packet = packetTemplates.Message(target, type, id, data);
 
-            var send = await Write(packet);
+            var send = await Write(packet, () => packetWatcher.Subscribe<Response>((t) => t.MessageId == packet.MessageId));
 
-            if (!send)
+            if (send == null)
             {
                 return new Response
                 {
@@ -88,7 +88,7 @@ namespace PalApi
                 };
             }
 
-            return await packetWatcher.Subscribe<Response>((t) => t.MessageId == packet.MessageId);
+            return send;
         }
 
         public async Task<Response> Reply(Message msg, string message)
