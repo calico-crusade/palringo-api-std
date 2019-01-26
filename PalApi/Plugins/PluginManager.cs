@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 namespace PalApi.Plugins
 {
     using Comparitors;
-    using Delegates;
     using Networking.Mapping;
     using Linguistics;
     using Types;
@@ -18,6 +17,8 @@ namespace PalApi.Plugins
     public interface IPluginManager
     {
         void Process(IPalBot bot, IPacketMap pkt);
+
+        IEnumerable<ExportedPlugin> ExportPlugins();
     }
 
     public class PluginManager : IPluginManager
@@ -316,6 +317,42 @@ namespace PalApi.Plugins
                         Command = pack.Command
                     });
                 }
+            }
+        }
+
+        public IEnumerable<ExportedPlugin> ExportPlugins()
+        {
+            var managed = plugins
+                            .Where(t => t.InstanceCommand != null)
+                            .GroupBy(t => t.InstanceCommand);
+
+            foreach(var plug in managed)
+            {
+                yield return new ExportedPlugin(plug.Select(t => t.MethodCommand).ToList())
+                {
+                    HasDefault = defaults.Any(t => t.InstanceCommand == plug.Key),
+                    Comparitor = plug.Key.Comparitor,
+                    MessageType = plug.Key.MessageType,
+                    Roles = plug.Key.Roles,
+                    Grouping = plug.Key.Grouping,
+                    Description = plug.Key.Description
+                };
+            }
+
+            var unmanaged = plugins
+                                .Where(t => t.InstanceCommand == null);
+
+            foreach(var plug in unmanaged)
+            {
+                yield return new ExportedPlugin(new List<ICommand>())
+                {
+                    HasDefault = false,
+                    Comparitor = plug.MethodCommand.Comparitor,
+                    MessageType = plug.MethodCommand.MessageType,
+                    Roles = plug.MethodCommand.Roles,
+                    Grouping = plug.MethodCommand.Grouping,
+                    Description = plug.MethodCommand.Description
+                };
             }
         }
         

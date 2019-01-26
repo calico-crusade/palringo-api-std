@@ -7,7 +7,7 @@ using System.Linq;
 namespace PalApi.Utilities.Storage
 {
     using DatabaseTypes;
-
+    
     public class Database
     {
         public static IDatabaseType DefaultDatabase { get; set; } = new SqliteDatabase();

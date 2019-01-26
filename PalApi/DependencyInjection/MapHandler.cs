@@ -84,7 +84,7 @@ namespace PalApi.DependencyInjection
             return this;
         }
 
-        public T Build()
+        public Container Create()
         {
             var cont = new Container();
             cont.Configure(c =>
@@ -106,8 +106,12 @@ namespace PalApi.DependencyInjection
                 foreach (var conf in Containers)
                     conf?.Invoke(c, cont);
             });
+            return cont;
+        }
 
-            return cont.GetInstance<T>();
+        public T Build()
+        {
+            return Create().GetInstance<T>();
         }
     }
 }

@@ -10,6 +10,7 @@ namespace PalApi.Plugins.Comparitors
         public virtual MessageType MessageType { get; set; } = MessageType.Group | MessageType.Private;
         public virtual string Roles { get; set; } = null;
         public virtual string Grouping { get; set; } = null;
+        public virtual string Description { get; set; } = null;
 
         public BaseCommand(string comp)
         {

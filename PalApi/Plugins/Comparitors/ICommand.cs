@@ -8,5 +8,6 @@
         MessageType MessageType { get; set; }
         string Roles { get; set; }
         string Grouping { get; set; }
+        string Description { get; set; }
     }
 }
