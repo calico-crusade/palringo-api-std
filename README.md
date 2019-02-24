@@ -3,6 +3,9 @@
 [![license](https://img.shields.io/github/license/calico-crusade/palringo-api-std.svg?style=for-the-badge)](https://github.com/calico-crusade/palringo-api-std/blob/master/LICENSE)
 [![GitHub last commit](https://img.shields.io/github/last-commit/calico-crusade/palringo-api-std.svg?style=for-the-badge)](https://github.com/calico-crusade/palringo-api-std/commits/master)
 
+# New project
+I embarked on expanding the scope of the "bot api" and created a new project that allows for multiple platforms to be supported for the same plugin set! Check it out [BotsDotNet](https://github.com/calico-crusade/BotsDotNet). I will be supporting this library for a while, however, most of my attention will be on the BotsDotNet library. New features will not be added unless there is resounding support. However, I will add them to BotsDotNet!
+
 # PalringoAPI for .net standard 2.0
 A complete rewrite of the original [PalringoAPI](https://github.com/calico-crusade/PalringoApi) in .net standard 2.0
 
