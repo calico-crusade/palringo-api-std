@@ -1,8 +1,6 @@
 ﻿using System;
 using PalApi.Example.ProjectPlugin;
 using PalApi.Types;
-using PalApi.Utilities.Storage;
-using PalApi.Utilities.Storage.DatabaseTypes;
 
 namespace PalApi.Cli
 {
@@ -17,7 +15,7 @@ namespace PalApi.Cli
         public async void Start()
         {
             //Create a new PalBot
-            await PalBot.Create()
+            var bot = PalBot.Create()
                         //Tell the PalBot to log packet activity to the Console
                         .UseConsoleLogging()
                         //Call our Register Extension we created for the example
@@ -37,9 +35,13 @@ namespace PalApi.Cli
                         //Load localizations - Don't include this if you aren't going to use localizations (multiple languages)
                         .LanguagesFromFlatFile("localizations.lang")
                         //Automatically relogin when the bot gets throttled
-                        .ReloginOnThrottle()
-                        //Start the login sequence. Only Email and Password are required. Rest will default
-                        .Login(
+                        .ReloginOnThrottle();
+
+            bot.On.GroupUpdate += (b, u) => Console.WriteLine($"User {u.UserId} {u.Type}ed {u.GroupId}");
+            bot.On.AdminAction += (b, u) => Console.WriteLine($"User {u.SourceId} {u.Action}ed {u.TargetId}");
+
+            //Start the login sequence. Only Email and Password are required. Rest will default
+            await bot.Login(
                             //Email Address
                             "example@test.com", 
                             //Password
@@ -50,6 +52,8 @@ namespace PalApi.Cli
                             DeviceType.Generic,
                             //Span filter (Suggest false, cause its a bot...)
                             false);
+
+            
         }
 
         /// <summary>
@@ -58,9 +62,6 @@ namespace PalApi.Cli
         /// <param name="args">Command line arguments (not used)</param>
         static void Main(string[] args)
         {
-            //Set the default database instance (Defaults to SQLite) This is not neccessary.
-            Database.DefaultDatabase = new MySqlDatabase("server=localhost;user id=root;password=pass;database=palapi;SslMode=None;Allow User Variables=True;");
-
             //Call the start method.
             new Program().Start();
 

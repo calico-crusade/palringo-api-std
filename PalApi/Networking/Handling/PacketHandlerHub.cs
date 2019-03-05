@@ -29,9 +29,11 @@ namespace PalApi.Networking.Handling
         {
             packetHandlers = new List<PacketHandlers>();
 
-            var handlers = reflection.GetAllTypesOf<IPacketHandler>();
+            var handlers = reflection.GetTypes(typeof(IPacketHandler))
+                                     .Select(t => (IPacketHandler)reflection.GetInstance(t))
+                                     .ToArray();
 
-            foreach(var handler in handlers)
+            foreach (var handler in handlers)
             {
                 var hndlr = new PacketHandlers
                 {

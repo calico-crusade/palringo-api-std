@@ -255,10 +255,12 @@ namespace PalApi
 
         public static MapHandler<IPalBot> Mapper()
         {
+            var bc = new BroadcastUtility();
             return new MapHandler<IPalBot>()
                 .AllOf<IPacketHandler>()
                 .AllOf<IPlugin>()
                 .AllOf<IRole>()
+                .Use<IBroadcastUtility, BroadcastUtility>(bc)
                 .Use<IReflectionUtility, ReflectionUtility>((c, i) => new ReflectionUtility(c));
         }
 

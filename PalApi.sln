@@ -13,10 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{5CD0EC21-43E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PalApi.Example.ProjectPlugin", "PalApi.Example.ProjectPlugin\PalApi.Example.ProjectPlugin.csproj", "{E9EFDC63-EA3E-483B-8C88-3637F4CE5601}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PalAPi.SocketIO", "PalAPi.SocketIO\PalAPi.SocketIO.csproj", "{E1529012-9183-4703-B6A6-1C8F3ECB73F6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PalApi.TestSocket", "PalApi.TestSocket\PalApi.TestSocket.csproj", "{831FD7AB-7509-4B59-A65A-FDDBF46C9F59}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PalApi.Tests", "PalApi.Tests\PalApi.Tests.csproj", "{A70EFAFB-2A91-414F-80B4-1F12C70B4C7E}"
 EndProject
 Global
@@ -41,14 +37,6 @@ Global
 		{E9EFDC63-EA3E-483B-8C88-3637F4CE5601}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9EFDC63-EA3E-483B-8C88-3637F4CE5601}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E9EFDC63-EA3E-483B-8C88-3637F4CE5601}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E1529012-9183-4703-B6A6-1C8F3ECB73F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E1529012-9183-4703-B6A6-1C8F3ECB73F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E1529012-9183-4703-B6A6-1C8F3ECB73F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E1529012-9183-4703-B6A6-1C8F3ECB73F6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{831FD7AB-7509-4B59-A65A-FDDBF46C9F59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{831FD7AB-7509-4B59-A65A-FDDBF46C9F59}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{831FD7AB-7509-4B59-A65A-FDDBF46C9F59}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{831FD7AB-7509-4B59-A65A-FDDBF46C9F59}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A70EFAFB-2A91-414F-80B4-1F12C70B4C7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A70EFAFB-2A91-414F-80B4-1F12C70B4C7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A70EFAFB-2A91-414F-80B4-1F12C70B4C7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
